@@ -17,22 +17,22 @@
             src="~/assets/images/icons/home.svg"
             alt="logo"
           />
-          <span> Home </span>
+          <span> Scans </span>
         </NuxtLink>
      
-        <NuxtLink to="/scans">
+        <NuxtLink to="/scanss/">
         <img
             v-show="$route.path == '/scans'"
             src="~/assets/images/icons/scans-active.svg"
             alt="logo"
           />
           <img
-            v-show="$route.path !== '/scans'"
+            v-show="$route.path !== '/scans/'"
             src="~/assets/images/icons/scans.svg"
             alt="logo"
           />
 
-          <span> Scans </span>
+          <span>Home</span>
         </NuxtLink>
       </div>
 

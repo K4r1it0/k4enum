@@ -15,7 +15,7 @@
 <style lang="scss" scoped>
 .header {
   h2 {
-    @apply text-sm text-placeholder font-bold;
+    @apply font-bold;
   }
 }
 </style>

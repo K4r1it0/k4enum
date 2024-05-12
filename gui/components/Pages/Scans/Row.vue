@@ -48,10 +48,4 @@ const getStyle = (status) => {
 };
 </script>
 
-<style lang="scss" scoped>
-.row {
-  p {
-    @apply text-sm text-placeholder font-light;
-  }
-}
-</style>
+

@@ -1,5 +1,8 @@
 <template>
-  <div>
+
+<SharedScans />
+
+<div>
     <!-- <div class="sub-nav mb-8">
       <div class="w-[95%] mx-auto flex items-center gap-3">
         <button>
@@ -10,6 +13,7 @@
       </div>
     </div> -->
 
+   
     <div class="container">
       <div class="flex justify-between items-start mb-8">
         <div>
@@ -22,6 +26,12 @@
             Browse scans, delve into their details, or initiate a new scan.
           </p>
         </div>
+        <button
+    @click="goToScans"
+    class="bg-white text-black text-xs py-2.5 px-3 rounded-md flex items-center gap-2"
+  >
+    <span>My Scans</span>
+  </button>
       </div>
 
       <div class="grid grid-cols-5 gap-2 mb-7">
@@ -194,6 +204,10 @@ const status = ref([
     value: 0,
   },
 ]);
+
+function goToScans() {
+  router.push('/scans')
+}
 
 const activeStatus = ref(
   status.value.find((el) => el.id == route?.query?.status) || {

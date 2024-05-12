@@ -1,4 +1,5 @@
 <template>
+  <SharedScans />
   <div>
     <!-- <div class="sub-nav mb-8">
       <div class="w-[95%] mx-auto flex items-center gap-3">
@@ -24,8 +25,7 @@
           @click="visible = true"
           class="bg-white text-black text-xs py-2.5 px-3 rounded-md flex items-center gap-2"
         >
-          <span>Create New Scan</span>
-          <i class="fal fa-plus"></i>
+          <span>New Scan</span>
         </button>
       </div>
 
@@ -214,7 +214,7 @@
         <div class="flex items-center justify-center mt-3">
           <button
             type="submit"
-            class="btn-reverse bg-white text-black text-xs py-2.5 px-3 rounded-md flex items-center justify-center gap-2 w-[150px]"
+            class="btn-reverse bg-white text-black text-xs py-2.5 px-3 rounded-md flex items-center justify-center gap-2 w-[90px]"
           >
             Start Scan
           </button>
@@ -320,23 +320,23 @@ const cities = ref([
 const selectedType = ref({
   id: "hybrid",
   value: "hybrid",
-  name: "Single Hybrid Scan",
+  name: "Single Hybrid",
 });
 const scanTypes = ref([
   {
     id: "hybrid",
     value: "hybrid",
-    name: "Single Hybrid Scan",
+    name: "Single Hybrid",
   },
   {
     id: "single_passive",
     value: "passive",
-    name: "Single Passive Scan",
+    name: "Single Passive",
   },
   {
     id: "multiple_passive",
     value: "passive",
-    name: "Multiple Passive Scan",
+    name: "Multiple Passive",
   },
 ]);
 

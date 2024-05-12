@@ -1,4 +1,5 @@
 <template>
+    <SharedScans/>
     <div class="container">
       <div v-if="loading" class="loading">Loading...</div>
       <div v-else class="content">
