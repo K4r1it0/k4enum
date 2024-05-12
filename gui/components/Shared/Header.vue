@@ -5,7 +5,7 @@
         <!-- <img src="~/assets/images/icons/logo.svg" alt="logo" /> -->
       </div>
  
-      <div class="nav-links"><!--
+      <div class="nav-links">
         <NuxtLink to="/">
           <img
             v-show="$route.path == '/'"
@@ -19,9 +19,9 @@
           />
           <span> Home </span>
         </NuxtLink>
-      -->
+     
         <NuxtLink to="/scans">
-         <!--<img
+        <img
             v-show="$route.path == '/scans'"
             src="~/assets/images/icons/scans-active.svg"
             alt="logo"
@@ -31,8 +31,8 @@
             src="~/assets/images/icons/scans.svg"
             alt="logo"
           />
--->
-          <span>Home</span>
+
+          <span> Scans </span>
         </NuxtLink>
       </div>
 

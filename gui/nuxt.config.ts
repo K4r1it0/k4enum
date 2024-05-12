@@ -1,4 +1,3 @@
-// https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   devtools: { enabled: false },
   ssr: true,
@@ -75,24 +74,14 @@ export default defineNuxtConfig({
         },
       },
     ],
-    // "@nuxtjs/color-mode",
   ],
-  // colorMode: {
-  //   preference: "system", // default value of $colorMode.preference
-  //   fallback: "light", // fallback value if not system preference found
-  //   classSuffix: "",
-  //   classPrefix: "",
-  //   storageKey: "nuxt-color-mode",
-  //   hid: "nuxt-color-mode-script",
-  //   globalName: "__NUXT_COLOR_MODE__",
-  //   componentName: "ColorScheme",
-  // },
   build: {
     transpile: ["primevue"],
   },
   runtimeConfig: {
     public: {
-      baseURL: "http://159.203.129.22:1234/",
+      // Use an environment variable for baseURL or default to localhost if it's not set
+      baseURL: process.env.API_BASE_URL || "http://159.203.129.22:1234/",
     },
   },
   spaLoadingTemplate: false,

@@ -1,11 +1,13 @@
 <template>
-  <div
+  
+  <div 
     v-if="
       item.task_name !== 'MainEnumerationTask' &&
       item.task_name !== 'YieldWrapper' &&
       item.task_name !== 'Miscellaneous'
     "
-    class="p-2 rounded-lg bg-[#121214] grid grid-cols-6 row hover:bg-border transition-all"
+     class="p-2 rounded-lg bg-[#121214] grid grid-cols-6 row hover:bg-border transition-all"
+    @click="navigateToTask(item.task_id)" 
   >
     <p>{{ index + 1 }}</p>
 
@@ -28,17 +30,27 @@
 
     <p class="ms-4 text-center">
       <NuxtLink
+        v-if="available"
         target="_blank"
         :to="`${baseURL}/download/${item.task_id}`"
         type="button"
       >
         <i class="fal fa-cloud-download"></i>
       </NuxtLink>
+      <span v-else class="text-gray-500">
+        <i class="fal fa-cloud-download"></i>
+      </span>
     </p>
   </div>
 </template>
 
 <script setup>
+import { ref, onMounted } from 'vue'
+import { useRoute } from 'vue-router'
+const available = ref(false);
+const router = useRouter();
+
+
 const props = defineProps({
   item: {
     type: Object,
@@ -49,6 +61,25 @@ const props = defineProps({
     required: true,
   },
 });
+
+const checkContentAvailability = async () => {
+  try {
+    const response = await fetch(`${baseURL}download/${props.item.task_id}`, { method: 'HEAD' });
+    if (response.ok && parseInt(response.headers.get('Content-Length')) > 0) {
+      available.value = true;
+    }
+  } catch (error) {
+    console.error('Error checking content availability:', error);
+  }
+};
+
+
+const navigateToTask  = (taskId) => {
+  if (available) {
+    router.push(`/tasks/output/${taskId}`);
+  }
+};
+onMounted(checkContentAvailability);
 
 const {
   public: { baseURL },
