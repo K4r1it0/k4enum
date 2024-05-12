@@ -1,0 +1,116 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap");
+
+html {
+  transition: all 0.2s ease-in-out;
+}
+
+body {
+  overflow-x: hidden;
+}
+
+body {
+  font-family: "Inter";
+  background: #09090b;
+  color: white;
+}
+
+.p-dropdown {
+  * {
+    font-size: 12px !important;
+  }
+  background: transparent !important;
+  .p-inputtext {
+    color: white !important;
+  }
+  @apply border border-border min-w-[120px];
+  .p-dropdown-panel {
+    @apply py-0 px-2 min-h-[35px] flex items-center justify-center text-xs text-white;
+  }
+  .p-dropdown-trigger {
+    svg {
+      width: 10px;
+    }
+  }
+}
+.p-dropdown-panel {
+  background: #09090b !important;
+  @apply border border-border p-1;
+  * {
+    font-size: 12px !important;
+  }
+}
+.p-dropdown-items-wrapper {
+  .p-highlight {
+    background: #27272a !important;
+  }
+  .p-dropdown-item-label {
+    color: white !important;
+  }
+}
+
+.p-dropdown-panel
+  .p-dropdown-items
+  .p-dropdown-item:not(.p-highlight):not(.p-disabled).p-focus {
+  background: #27272a !important;
+}
+.p-dropdown:not(.p-disabled).p-focus {
+  outline: 1px solid #3f3f46 !important;
+}
+
+.p-skeleton {
+  background: #e2e8f012 !important;
+  &::after {
+    opacity: 0.1;
+  }
+}
+
+.p-dialog-mask {
+  .p-dialog {
+    background: #27272a !important;
+    .p-dialog-header,
+    .p-dialog-content {
+      background: transparent !important;
+      *:not(.btn-reverse) {
+        color: white;
+      }
+    }
+  }
+}
+
+.Pagination {
+  justify-content: center;
+  .PaginationControl {
+    .Control {
+      fill: #fff !important;
+      cursor: not-allowed !important;
+      &.Control-active {
+        fill: #fff !important;
+        cursor: pointer !important;
+        &:hover {
+          fill: #fff !important;
+        }
+      }
+    }
+  }
+  .Page {
+    width: 33px;
+    height: 33px;
+    border-radius: 50%;
+    transition: all 0.2s ease-in-out;
+    font: {
+      family: "Work Sans", sans-serif;
+      size: 16px;
+      weight: 600;
+    }
+    &:hover,
+    &.Page-active {
+      background-color: #121214 !important;
+      color: #fff !important;
+      border: none !important;
+    }
+  }
+}
