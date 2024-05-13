@@ -3,7 +3,7 @@
     <div class="container">
       <div v-if="loading" class="loading">Loading...</div>
       <div v-else class="content">
-        <pre>{{ data }}</pre>
+        <pre @dblclick="copyData">{{ data }}</pre>
       </div>
     </div>
   </template>
@@ -20,6 +20,14 @@
   public: { baseURL },
 } = useRuntimeConfig();
 
+const copyData = async () => {
+  try {
+    await navigator.clipboard.writeText(data.value);
+    console.log('Data copied to clipboard');
+  } catch (err) {
+    console.error('Failed to copy data:', err);
+  }
+};
   const fetchData = async () => {
     try {
       const url = `${baseURL}/download/${route.params.id}`;

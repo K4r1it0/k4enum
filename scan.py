@@ -55,7 +55,8 @@ def setup_database():
                 timestamp TEXT,
                 scan_id TEXT,
                 type TEXT,
-        dir TEXT,
+                process_pid,
+                dir TEXT,
                 domain Text,
                 FOREIGN KEY (scan_id) REFERENCES scans(scan_id) ON DELETE CASCADE
             );

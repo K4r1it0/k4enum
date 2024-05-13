@@ -21,7 +21,7 @@
       <NuxtLink
         v-if="available && item.task_name !== 'TlsFilter' &&item.task_name !== 'WordlistGenerator' &&item.task_name !== 'AssetEnrichment'"
         target="_blank"
-        :to="`${baseURL}/download/${item.task_id}`"
+        :to="`${baseURL}download/${item.task_id}`"
         type="button"
       >
         <i class="fal fa-cloud-download"></i>
@@ -67,7 +67,7 @@ const handleStatusClick = (item) => {
   const navigateToTask = (taskId,taskName) => {
     if (taskName !== 'TlsFilter' &&taskName !== 'WordlistGenerator' &&taskName !== 'AssetEnrichment'){
       console.log(taskName);
-    window.open(`/tasks/output/${taskId}`);}
+    window.open(`${baseURL}/tasks/output/${taskId}`);}
   };
   onMounted(checkContentAvailability);
   
