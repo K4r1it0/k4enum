@@ -1,6 +1,7 @@
 apt install python3-pip --yes
 pip3 install luigi --break-system-packages
 pip3 install flask --break-system-packages
+apt install npm
 wget https://go.dev/dl/go1.22.1.linux-amd64.tar.gz
 rm -rf /usr/local/go && tar -C /usr/local -xzf go1.22.1.linux-amd64.tar.gz
 echo 'export PATH=$PATH:/usr/local/go/bin' >> ~/.profile
@@ -22,6 +23,7 @@ go install github.com/d3mondev/puredns/v2@latest
 go install github.com/projectdiscovery/alterx/cmd/alterx@latest
 go install github.com/projectdiscovery/tlsx/cmd/tlsx@latest
 go install -v github.com/projectdiscovery/dnsx/cmd/dnsx@latest
+go install github.com/trickest/dsieve@latest
 
 wget https://wordlists-cdn.assetnote.io/data/manual/best-dns-wordlist.txt -o ~/best-dns-wordlist.txt
-wget https://github.com/trickest/resolvers/raw/main/resolvers.txt -o ~/resolvers.txt
+wget https://raw.githubusercontent.com/trickest/resolvers/main/resolvers.txt -o ~/resolvers.txt
