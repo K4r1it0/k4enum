@@ -67,7 +67,7 @@ const handleStatusClick = (item) => {
   const navigateToTask = (taskId,taskName) => {
     if (taskName !== 'TlsFilter' &&taskName !== 'WordlistGenerator' &&taskName !== 'AssetEnrichment'){
       console.log(taskName);
-    window.open(`${baseURL}tasks/output/${taskId}`);}
+    window.open(`/tasks/output/${taskId}`);}
   };
   onMounted(checkContentAvailability);
   
