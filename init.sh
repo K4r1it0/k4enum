@@ -25,5 +25,5 @@ go install github.com/projectdiscovery/tlsx/cmd/tlsx@latest
 go install -v github.com/projectdiscovery/dnsx/cmd/dnsx@latest
 go install github.com/trickest/dsieve@latest
 
-wget https://wordlists-cdn.assetnote.io/data/manual/best-dns-wordlist.txt -o ~/best-dns-wordlist.txt
-wget https://raw.githubusercontent.com/trickest/resolvers/main/resolvers.txt -o ~/resolvers.txt
+wget https://wordlists-cdn.assetnote.io/data/manual/best-dns-wordlist.txt -O ~/best-dns-wordlist.txt
+wget https://raw.githubusercontent.com/trickest/resolvers/main/resolvers.txt -O ~/resolvers.txt
