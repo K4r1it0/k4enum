@@ -38,7 +38,8 @@ import { ref, onMounted } from 'vue'
 import { useRoute, useRuntimeConfig } from '#imports'
 import { useRouter } from 'vue-router';
 const available = ref(false);
-  
+let counts = ref(0);
+
 const handleStatusClick = (item) => {
  return true;
 }
