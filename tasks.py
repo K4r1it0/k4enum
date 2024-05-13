@@ -85,7 +85,7 @@ class ActivePortScaning(BaseTask):
         return luigi.LocalTarget(f"{self.save_directory}/{self.__class__.__name__}-{self.case}")
 
     def run(self):
-        cmd = f"cat {self.input().path} | naabu -silent -c 100 -rate 2000 -p '443,80,81,300,591,593,832,981,1010,1311,1099,2082,2095,2096,2480,3000,3128,3333,4243,4567,4711,4712,4993,5000,5104,5108,5280,5281,5601,5800,6543,7000,7001,7396,7474'"
+        cmd = f"cat {self.input().path} | naabu -silent -c 100 -rate 2000 -p '443,80,81,300,591,593,832,981,1010,1311,1099,2082,2095,2096,2480,3000,3128,3333,4243,4567,4711,4712,4993,5000,5104,5108,5280,5281,5601,5800,6543,7000,7001,7396,7474' || true"
         self.run_cmd(cmd, self.output().path)
 
 
