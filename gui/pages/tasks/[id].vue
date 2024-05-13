@@ -170,28 +170,28 @@ const visible = ref(false);
 const status = ref([
   {
     id: "all",
-    title: "TOTAL SCANS",
+    title: "TOTAL TASKS",
     img: "/icons/shield.svg",
     bgIconColor: "#6366f133",
     value: 0,
   },
   {
     id: "running",
-    title: "RUNNING SCANS",
+    title: "RUNNING TASKS",
     img: "/icons/reload.svg",
     bgIconColor: "#f59e0b33",
     value: 0,
   },
   {
     id: "pending",
-    title: "Pending SCANS",
+    title: "Pending TASKS",
     img: "/icons/clock.svg",
     bgIconColor: "#71717a33",
     value: 0,
   },
   {
     id: "done",
-    title: "Complete Scans",
+    title: "Complete TASKS",
     img: "/icons/checked.svg",
     bgIconColor: "#22c55e33",
     value: 0,
