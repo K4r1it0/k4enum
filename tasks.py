@@ -43,7 +43,7 @@ class AssetEnrichment(BaseTask):
         # Aggregate outputs from dependencies
         input_files = [input_file.path for input_file in self.input()]
         # Command for aggregating and enriching asset data
-        cmd = f"cat {' '.join(input_files)} | sed 's/\*\.//g' | sort -u | dsieve"  # Assuming dsieve or another enrichment tool follows
+        cmd = f"cat {' '.join(input_files)} | sed 's/\*\.//g' | sort -u | dsieve  2> /dev/null || true"  # Assuming dsieve or another enrichment tool follows
         self.run_cmd(cmd, self.output().path)
 
     def output(self):
