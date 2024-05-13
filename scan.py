@@ -8,13 +8,7 @@ from datetime import datetime
 from tasks import MainEnumerationTask
 from utils import create_directory
 
-# Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
-
-def set_luigi_config():
-    config = luigi.configuration.get_config()
-    config.set('scheduler', 'remove_delay', '86400')
-    logging.info("Luigi configuration has been set.")
 
 def run_enumeration_tasks(domain, scan_type):
     scan_id = str(uuid.uuid4())

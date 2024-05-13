@@ -119,21 +119,23 @@ def get_scans():
 @app.route('/scans/<scan_id>/tasks/count', methods=['GET'])
 def count_tasks_by_scan(scan_id):
     conn = get_db_connection()
+    excluded_tasks = ('MainEnumerationTask', 'YieldWrapper', 'Miscellaneous')
+
     status_query = '''
         SELECT status, COUNT(*) AS count
         FROM task_status
-        WHERE scan_id = ?
+        WHERE scan_id = ? AND task_name NOT IN (?, ?, ?)
         GROUP BY status
     '''
     total_query = '''
         SELECT COUNT(*) AS total
         FROM task_status
-        WHERE scan_id = ?
+        WHERE scan_id = ? AND task_name NOT IN (?, ?, ?)
     '''
 
     # Execute the queries
-    tasks = conn.execute(status_query, (scan_id,)).fetchall()
-    total_result = conn.execute(total_query, (scan_id,)).fetchone()
+    tasks = conn.execute(status_query, (scan_id,) + excluded_tasks).fetchall()
+    total_result = conn.execute(total_query, (scan_id,) + excluded_tasks).fetchone()
     conn.close()
 
     # Initialize a dictionary for task counts with all required statuses set to zero
@@ -144,7 +146,7 @@ def count_tasks_by_scan(scan_id):
         if task['status'] in task_counts:
             task_counts[task['status']] = task['count']
 
-    # Calculate the total count of tasks for the scan_id
+    # Calculate the total count of tasks for the scan_id excluding specific task names
     total_tasks = total_result['total'] if total_result else 0
 
     # Append the total count to the task counts

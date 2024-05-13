@@ -19,7 +19,7 @@
     </p>
     <p  class="ms-4 text-center" @click.stop="handleStatusClick(item)">
       <NuxtLink
-        v-if="available"
+        v-if="available && item.task_name !== 'TlsFilter' &&item.task_name !== 'WordlistGenerator' &&item.task_name !== 'AssetEnrichment'"
         target="_blank"
         :to="`${baseURL}/download/${item.task_id}`"
         type="button"
