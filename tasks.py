@@ -60,7 +60,7 @@ class WordlistGenerator(BaseTask):
         return luigi.LocalTarget(f"{self.save_directory}/{self.__class__.__name__}-{self.case}")
 
     def run(self):
-        cmd = f"cat {self.input().path} | alterx -enrich -silent"
+        cmd = f"cat {self.input().path} | alterx -enrich -silent 2> /dev/null || true"
         self.run_cmd(cmd, self.output().path)
 
 class DNSResolving(BaseTask):
