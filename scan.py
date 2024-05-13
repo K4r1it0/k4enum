@@ -29,7 +29,7 @@ def run_enumeration_tasks(domain, scan_type):
         return
     
     # Build tasks linked to this scan
-    luigi.build([MainEnumerationTask(scan_type=scan_type, domain=domain, save_directory=save_directory, scan_id=scan_id)], workers=50)
+    luigi.build([MainEnumerationTask(scan_type=scan_type, domain=domain, save_directory=save_directory, scan_id=scan_id)], workers=50, local_scheduler=True)
     logging.info("Luigi tasks have been built and are running.")
 
 def setup_database():
@@ -68,7 +68,6 @@ def setup_database():
 
 if __name__ == "__main__":
     setup_database()
-    set_luigi_config()
     luigi.interface.core.log_level = 'DEBUG'
     
     parser = argparse.ArgumentParser(description='Run enumeration tasks on a given domain.')

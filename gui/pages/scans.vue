@@ -141,8 +141,8 @@
               @click="visible = true"
               class="bg-white text-black text-xs py-2.5 px-3 rounded-md flex items-center gap-2"
             >
+              <br>
               <span>Start Scan</span>
-              <i class="fal fa-plus"></i>
             </button>
           </div>
         </template>
