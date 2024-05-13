@@ -72,7 +72,7 @@ class BaseTask(luigi.Task):
             self.update_status('done')
         except subprocess.CalledProcessError as e:
             with open(output_path, 'w') as file:
-                file.write("CalledProcessError")
+                file.write(f"CalledProcessError: {e}")
             self.fail_task(f"Command failed with error: {e}")
 
     def fail_task(self, message):
