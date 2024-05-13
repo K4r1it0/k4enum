@@ -2,7 +2,7 @@
   <div v-if="item.task_name !== 'MainEnumerationTask' &&item.task_name !== 'YieldWrapper' &&item.task_name !== 'Miscellaneous'"
   class="p-2 rounded-lg bg-[#121214] grid grid-cols-6 row hover:bg-border transition-all"
     :class="{ 'cursor-pointer': available }"
-    @click="available ? navigateToTask(item.task_id) : null"
+    @click="available ? navigateToTask(item.task_id,item.task_name) : null"
   >
     <p>{{ index + 1 }}</p>
     <p>{{ item.task_name }}</p>
@@ -64,8 +64,10 @@ const handleStatusClick = (item) => {
     }
   };
   
-  const navigateToTask = (taskId) => {
-    window.open(`/tasks/output/${taskId}`);
+  const navigateToTask = (taskId,taskName) => {
+    if (taskName !== 'TlsFilter' &&taskName !== 'WordlistGenerator' &&taskName !== 'AssetEnrichment'){
+      console.log(taskName);
+    window.open(`/tasks/output/${taskId}`);}
   };
   onMounted(checkContentAvailability);
   
