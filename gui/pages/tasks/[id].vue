@@ -198,7 +198,7 @@ const status = ref([
   },
   {
     id: "failed",
-    title: "Failed Scans",
+    title: "Failed TASKS",
     img: "/icons/close.svg",
     bgIconColor: "#f43f5e33",
     value: 0,
@@ -212,7 +212,7 @@ function goToScans() {
 const activeStatus = ref(
   status.value.find((el) => el.id == route?.query?.status) || {
     id: "all",
-    title: "TOTAL SCANS",
+    title: "TOTAL TASKS",
     img: "/icons/shield.svg",
     bgIconColor: "#6366f133",
     value: 0,
@@ -231,7 +231,7 @@ const reload = () => {
   searchValue.value = "";
   (activeStatus.value = {
     id: "all",
-    title: "TOTAL SCANS",
+    title: "TOTAL TASKS",
     img: "/icons/shield.svg",
     bgIconColor: "#6366f133",
     value: 0,

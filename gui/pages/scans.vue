@@ -139,7 +139,7 @@
             </span>
             <button
               @click="visible = true"
-              class="bg-white text-black text-xs py-2.5 px-3 rounded-md flex items-center gap-2"
+              class="bg-white text-black text-xs py-2.5 px-3 rounded-md flex items-center"
             >
               <br>
               <span>Start Scan</span>
@@ -214,10 +214,7 @@
         <div class="flex items-center justify-center mt-3">
           <button
             type="submit"
-            class="btn-reverse bg-white text-black text-xs py-2.5 px-3 rounded-md flex items-center justify-center gap-2 w-[90px]"
-          >
-            Start Scan
-          </button>
+            class="btn-reverse bg-white text-black text-xs py-2.5 px-3 rounded-md flex items-center justify-center gap-2 w-[90px]">Start Scan</button>
         </div>
       </form>
     </Dialog>
