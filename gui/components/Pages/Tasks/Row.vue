@@ -35,7 +35,8 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-  
+import { useRoute, useRuntimeConfig } from '#imports'
+import { useRouter } from 'vue-router';
 const available = ref(false);
   
 const handleStatusClick = (item) => {
@@ -63,12 +64,12 @@ const handleStatusClick = (item) => {
       console.error('Error checking content availability:', error);
     }
   };
-  
-  const navigateToTask = (taskId,taskName) => {
-    if (taskName !== 'TlsFilter' &&taskName !== 'WordlistGenerator' &&taskName !== 'AssetEnrichment'){
-      console.log(taskName);
-    window.open(`/tasks/output/${taskId}`);}
-  };
+  const router = useRouter();
+  const navigateToTask = (taskId, taskName) => {
+  if (taskName !== 'TlsFilter' && taskName !== 'WordlistGenerator' && taskName !== 'AssetEnrichment') {
+    router.push(`/tasks/output/${taskId}`);
+  }
+};
   onMounted(checkContentAvailability);
   
   const {
