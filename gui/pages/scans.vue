@@ -418,7 +418,7 @@ const getCounts = async () => {
   }
   loadingCounts.value = false;
 };
-getCounts();
+setInterval(getCounts, 10000);
 </script>
 
 <style lang="scss" scoped>

@@ -90,4 +90,14 @@ const handleStatusClick = (item) => {
       return "text-gray-400";
   }
 };
+
+setInterval(() => {
+  counts.value++;
+}, 10000);
+
+// Watch counts to trigger reactivity
+watch(counts, () => {
+  checkContentAvailability();
+});
+
   </script>
