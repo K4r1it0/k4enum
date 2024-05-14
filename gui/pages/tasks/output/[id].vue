@@ -77,9 +77,5 @@ const copyData = async () => {
     @apply flex items-center justify-center gap-2 text-xs w-[80px] py-2 border-b-2 border-active;
   }
 }
-.search-input {
-  @apply bg-transparent block border border-e-0 border-border focus:outline-none placeholder:text-placeholder placeholder:text-xs w-full px-2 min-h-[35px] rounded-s-md text-xs bg-active-bg hover:bg-border transition-[background] focus-within:outline-none;
-}
-
 
 </style>

@@ -205,7 +205,6 @@ def get_tasks_for_scan(scan_id):
     page = int(request.args.get('page', 1))
     per_page = int(request.args.get('per_page', 10))
     status = request.args.get('status')
-    search = request.args.get('search')
 
     conn = get_db_connection()
     # Retrieve domain from the scans table
@@ -226,12 +225,15 @@ def get_tasks_for_scan(scan_id):
     if status:
         base_query += ' AND status = ?'
         params.append(status)
-    if search:
-        base_query += ' AND task_name LIKE ?'
-        params.append(f"%{search}%")
+
+    tasks = []
+    task_names = request.args.getlist('task')
+    if task_names:
+        base_query += ' AND task_name IN ({})'.format(','.join(['?']*len(task_names)))
+        params.extend(task_names)
 
     base_query += ' ORDER BY timestamp DESC'
-    
+
     total_count = get_total_count(base_query, conn, params)
     paginated_query = paginate_query(base_query, page, per_page)
     tasks = conn.execute(paginated_query, params).fetchall()
@@ -253,7 +255,6 @@ def get_tasks_for_scan(scan_id):
             'per_page': per_page
         }
     })
-    
 
 @app.route('/download/<task_id>', methods=['GET'])
 def download_file(task_id):
