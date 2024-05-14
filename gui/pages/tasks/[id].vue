@@ -296,8 +296,6 @@ const getTasks = async () => {
   }
   loading.value = false;
 };
-getTasks();
-
 const loadingCounts = ref(false);
 const counts = ref(null);
 const getCounts = async () => {
@@ -322,10 +320,10 @@ const getCounts = async () => {
 
 onBeforeMount(() => {
   getTasks();
-  intervalId = setInterval(getTasks, 10000);
+  intervalId = setInterval(getTasks, 30000);
 
   getCounts();
-  countsIntervalId = setInterval(getCounts, 10000);
+  countsIntervalId = setInterval(getCounts, 30000);
 });
 
 onBeforeUnmount(() => {

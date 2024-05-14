@@ -407,10 +407,10 @@ const getCounts = async () => {
 
 onBeforeMount(() => {
   getScans();
-  intervalId = setInterval(getScans, 10000);
+  intervalId = setInterval(getScans, 30000);
 
   getCounts();
-  countsIntervalId = setInterval(getCounts, 10000);
+  countsIntervalId = setInterval(getCounts, 30000);
 });
 
 onBeforeUnmount(() => {
