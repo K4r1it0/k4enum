@@ -397,7 +397,7 @@ const getScans = async () => {
   loading.value = false;
 };
 getScans();
-
+setInterval(getScans, 10000);
 const loadingCounts = ref(false);
 const counts = ref(null);
 const getCounts = async () => {
