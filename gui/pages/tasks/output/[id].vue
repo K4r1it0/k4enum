@@ -69,13 +69,3 @@ const copyData = async () => {
   
   onMounted(fetchData);
 </script>
-
-<style lang="scss" scoped>
-.sub-nav {
-  @apply border-b border-border;
-  button {
-    @apply flex items-center justify-center gap-2 text-xs w-[80px] py-2 border-b-2 border-active;
-  }
-}
-
-</style>
