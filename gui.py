@@ -116,6 +116,69 @@ def get_scans():
         }
     })
 
+
+@app.route('/scans/<scan_id>/tasks', methods=['GET'])
+def get_tasks_for_scan(scan_id):
+    excluded_tasks = ('MainEnumerationTask', 'YieldWrapper', 'Miscellaneous')
+    page = int(request.args.get('page', 1))
+    per_page = int(request.args.get('per_page', 10))
+    status = request.args.get('status')
+    search_param = request.args.get('search')
+
+    conn = get_db_connection()
+    # Retrieve domain from the scans table
+    domain_query = 'SELECT domain FROM scans WHERE scan_id = ?'
+    domain_result = conn.execute(domain_query, (scan_id,)).fetchone()
+    domain = domain_result['domain'] if domain_result else None
+
+    if not domain:
+        return jsonify({'error': 'No scan found with the given scan ID'}), 404
+
+    # Query tasks related to the scan_id
+    base_query = f'''
+        SELECT task_id, task_name, status, type, message, timestamp
+        FROM task_status
+        WHERE scan_id = ?
+    '''
+    params = [scan_id]
+    if status:
+        base_query += ' AND status = ?'
+        params.append(status)
+    
+    # Filter out excluded tasks
+    base_query += ' AND task_name NOT IN ({})'.format(','.join(['?'] * len(excluded_tasks)))
+    params.extend(excluded_tasks)
+
+    # Convert search parameter to SQL query
+    if search_param:
+        search_values = search_param.split('|')
+        base_query += f' AND task_name IN ({",".join(["?"] * len(search_values))})'
+        params.extend(search_values)
+
+    base_query += ' ORDER BY timestamp DESC'
+    
+    total_count = get_total_count(base_query, conn, params)
+    paginated_query = paginate_query(base_query, page, per_page)
+    tasks = conn.execute(paginated_query, params).fetchall()
+    conn.close()
+    task_list = [
+        {'task_id': task['task_id'], 'task_name': task['task_name'], 'status': task['status'],
+         'type': task['type'], 'updatedAt': task['timestamp']}
+        for task in tasks
+    ]
+    total_pages = (total_count + per_page - 1) // per_page
+
+    return jsonify({
+        'domain': domain,
+        'data': task_list,
+        'pagination': {
+            'total_items': total_count,
+            'total_pages': total_pages,
+            'current_page': page,
+            'per_page': per_page
+        }
+    })
+
 @app.route('/scans/<scan_id>/tasks/count', methods=['GET'])
 def count_tasks_by_scan(scan_id):
     conn = get_db_connection()
