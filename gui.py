@@ -205,6 +205,7 @@ def get_tasks_for_scan(scan_id):
     page = int(request.args.get('page', 1))
     per_page = int(request.args.get('per_page', 10))
     status = request.args.get('status')
+    search = request.args.get('search')
 
     conn = get_db_connection()
     # Retrieve domain from the scans table
@@ -225,15 +226,13 @@ def get_tasks_for_scan(scan_id):
     if status:
         base_query += ' AND status = ?'
         params.append(status)
-
-    tasks = []
-    task_names = request.args.getlist('task')
-    if task_names:
-        base_query += ' AND task_name IN ({})'.format(','.join(['?']*len(task_names)))
-        params.extend(task_names)
+    if search:
+        search_values = search.split('|')
+        base_query += f' AND task_name IN ({",".join(["?"] * len(search_values))})'
+        params.extend(search_values)
 
     base_query += ' ORDER BY timestamp DESC'
-
+    
     total_count = get_total_count(base_query, conn, params)
     paginated_query = paginate_query(base_query, page, per_page)
     tasks = conn.execute(paginated_query, params).fetchall()
