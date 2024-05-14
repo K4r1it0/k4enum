@@ -243,7 +243,7 @@ function convertToSearchParam(defaultSearchValue) {
 }
 
 
-const searchValue = ref(convertToDefaultSearchValue(route.query.search) || "Task = 'TaskA' & Task = 'TaskB' & Task = 'TaskC' & Task = 'TaskD'");
+const searchValue = ref(convertToDefaultSearchValue(route.query.search) || "Task = 'DNSResolving' & Task = 'PortScaning' & Task = 'HTTPProbing' & Task = 'VulnerabilityScanner' & Task = 'RecordsDump'");
 const submitSearch = () => {
   page.value = 1;
   
