@@ -319,6 +319,7 @@ const getCounts = async () => {
   loadingCounts.value = false;
 };
 
+
 onMounted(() => {
   getTasks();
   intervalId = setInterval(getTasks, 10000);
@@ -342,5 +343,7 @@ onBeforeUnmount(() => {
 }
 .search-input {
   @apply bg-transparent block border border-e-0 border-border focus:outline-none placeholder:text-placeholder placeholder:text-xs w-full px-2 min-h-[35px] rounded-s-md text-xs bg-active-bg hover:bg-border transition-[background] focus-within:outline-none;
+  font-size: 16px; 
+
 }
 </style>
