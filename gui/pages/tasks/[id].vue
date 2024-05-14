@@ -230,9 +230,18 @@ function convertToDefaultSearchValue(searchParam) {
 }
 
 function convertToSearchParam(defaultSearchValue) {
-  const tasks = defaultSearchValue.match(/'([^']+)'/g).map(task => task.replace(/'/g, ''));
-  return tasks.join('|');
+  if (!defaultSearchValue) {
+    return '';
+  }
+
+  const tasks = defaultSearchValue.match(/'([^']+)'/g);
+  if (!tasks) {
+    return '';
+  }
+
+  return tasks.map(task => task.replace(/'/g, '')).join('|');
 }
+
 
 const searchValue = ref(convertToDefaultSearchValue(route.query.search) || "Task = 'TaskA' & Task = 'TaskB' & Task = 'TaskC' & Task = 'TaskD'");
 const submitSearch = () => {
