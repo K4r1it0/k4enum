@@ -159,6 +159,10 @@
 import Dropdown from "primevue/dropdown";
 import Skeleton from "primevue/skeleton";
 
+let intervalId = null;
+let countsIntervalId = null;
+
+
 const {
   public: { baseURL },
 } = useRuntimeConfig();
@@ -314,8 +318,19 @@ const getCounts = async () => {
   }
   loadingCounts.value = false;
 };
-getCounts();
-setInterval(getCounts, 10000);
+
+onMounted(() => {
+  getTasks();
+  intervalId = setInterval(getTasks, 10000);
+
+  getCounts();
+  countsIntervalId = setInterval(getCounts, 10000);
+});
+
+onBeforeUnmount(() => {
+  clearInterval(intervalId);
+  clearInterval(countsIntervalId);
+});
 </script>
 
 <style lang="scss" scoped>
