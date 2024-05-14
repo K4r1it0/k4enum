@@ -116,7 +116,90 @@ def get_scans():
         }
     })
 
-@app.route('/scans/<scan_id>/tasks', methods=['GET'])
+@app.route('/scans/<scan_id>/tasks/count', methods=['GET'])
+def count_tasks_by_scan(scan_id):
+    conn = get_db_connection()
+    excluded_tasks = ('MainEnumerationTask', 'YieldWrapper', 'Miscellaneous')
+
+    status_query = '''
+        SELECT status, COUNT(*) AS count
+        FROM task_status
+        WHERE scan_id = ? AND task_name NOT IN (?, ?, ?)
+        GROUP BY status
+    '''
+    total_query = '''
+        SELECT COUNT(*) AS total
+        FROM task_status
+        WHERE scan_id = ? AND task_name NOT IN (?, ?, ?)
+    '''
+
+    # Execute the queries
+    tasks = conn.execute(status_query, (scan_id,) + excluded_tasks).fetchall()
+    total_result = conn.execute(total_query, (scan_id,) + excluded_tasks).fetchone()
+    conn.close()
+
+    # Initialize a dictionary for task counts with all required statuses set to zero
+    task_counts = {'failed': 0, 'running': 0, 'pending': 0, 'done': 0}
+
+    # Update the dictionary with actual counts from the database
+    for task in tasks:
+        if task['status'] in task_counts:
+            task_counts[task['status']] = task['count']
+
+    # Calculate the total count of tasks for the scan_id excluding specific task names
+    total_tasks = total_result['total'] if total_result else 0
+
+    # Append the total count to the task counts
+    task_counts['all'] = total_tasks
+
+    # Create a list from the dictionary to format the output as a list of dictionaries
+    status_counts = [{'status': status, 'count': count} for status, count in task_counts.items()]
+
+    return jsonify({
+        'status_counts': status_counts
+    })
+
+
+
+@app.route('/scans/count', methods=['GET'])
+def count_scans():
+    conn = get_db_connection()
+    status_query = '''
+        SELECT status, COUNT(*) AS count
+        FROM scans
+        GROUP BY status
+    '''
+    total_query = '''
+        SELECT COUNT(*) AS total
+        FROM scans
+    '''
+
+    # Execute the queries
+    scans = conn.execute(status_query).fetchall()
+    total_result = conn.execute(total_query).fetchone()
+    conn.close()
+
+    # Calculate the total count of scans
+    total_scans = total_result['total'] if total_result else 0
+
+    # Define all possible statuses
+    possible_statuses = ['done', 'failed', 'running', 'pending']  # Add 'pending' if it's also a required status
+    scan_counts_dict = {status: 0 for status in possible_statuses}  # Initialize counts to zero
+
+    # Update counts from the database
+    for scan in scans:
+        if scan['status'] in scan_counts_dict:
+            scan_counts_dict[scan['status']] = scan['count']
+
+    # Prepare the list to return
+    scan_counts = [{'status': status, 'count': scan_counts_dict[status]} for status in possible_statuses]
+
+    scan_counts.append({'status':"all","count":total_scans})
+
+    return jsonify({
+        'status_counts': scan_counts
+    })
+
 def get_tasks_for_scan(scan_id):
     excluded_tasks = ('MainEnumerationTask', 'YieldWrapper', 'Miscellaneous')
     page = int(request.args.get('page', 1))
@@ -177,51 +260,6 @@ def get_tasks_for_scan(scan_id):
             'per_page': per_page
         }
     })
-
-
-
-
-
-
-@app.route('/scans/count', methods=['GET'])
-def count_scans():
-    conn = get_db_connection()
-    status_query = '''
-        SELECT status, COUNT(*) AS count
-        FROM scans
-        GROUP BY status
-    '''
-    total_query = '''
-        SELECT COUNT(*) AS total
-        FROM scans
-    '''
-
-    # Execute the queries
-    scans = conn.execute(status_query).fetchall()
-    total_result = conn.execute(total_query).fetchone()
-    conn.close()
-
-    # Calculate the total count of scans
-    total_scans = total_result['total'] if total_result else 0
-
-    # Define all possible statuses
-    possible_statuses = ['done', 'failed', 'running', 'pending']  # Add 'pending' if it's also a required status
-    scan_counts_dict = {status: 0 for status in possible_statuses}  # Initialize counts to zero
-
-    # Update counts from the database
-    for scan in scans:
-        if scan['status'] in scan_counts_dict:
-            scan_counts_dict[scan['status']] = scan['count']
-
-    # Prepare the list to return
-    scan_counts = [{'status': status, 'count': scan_counts_dict[status]} for status in possible_statuses]
-
-    scan_counts.append({'status':"all","count":total_scans})
-
-    return jsonify({
-        'status_counts': scan_counts
-    })
-
 
 @app.route('/download/<task_id>', methods=['GET'])
 def download_file(task_id):
