@@ -227,6 +227,9 @@ import Dropdown from "primevue/dropdown";
 import Skeleton from "primevue/skeleton";
 import MultiSelect from "primevue/multiselect";
 
+let intervalId = null;
+let countsIntervalId = null;
+
 const {
   public: { baseURL },
 } = useRuntimeConfig();
@@ -305,14 +308,6 @@ const reload = () => {
   getScans();
 };
 
-const selectedCity = ref();
-const cities = ref([
-  { name: "New York", code: "NY" },
-  { name: "Rome", code: "RM" },
-  { name: "London", code: "LDN" },
-  { name: "Istanbul", code: "IST" },
-  { name: "Paris", code: "PRS" },
-]);
 
 const selectedType = ref({
   id: "hybrid",
@@ -337,14 +332,6 @@ const scanTypes = ref([
   },
 ]);
 
-const products = ref([
-  {
-    code: "1234",
-    name: "Istanbul",
-    category: "London",
-    quantity: 1,
-  },
-]);
 
 const loading = ref(false);
 
@@ -396,8 +383,7 @@ const getScans = async () => {
   }
   loading.value = false;
 };
-getScans();
-setInterval(getScans, 10000);
+
 const loadingCounts = ref(false);
 const counts = ref(null);
 const getCounts = async () => {
@@ -418,8 +404,21 @@ const getCounts = async () => {
   }
   loadingCounts.value = false;
 };
-getCounts();
-setInterval(getCounts, 10000);
+
+onMounted(() => {
+  getScans();
+  intervalId = setInterval(getScans, 10000);
+
+  getCounts();
+  countsIntervalId = setInterval(getCounts, 10000);
+});
+
+onBeforeUnmount(() => {
+  clearInterval(intervalId);
+  clearInterval(countsIntervalId);
+});
+
+
 </script>
 
 <style lang="scss" scoped>
