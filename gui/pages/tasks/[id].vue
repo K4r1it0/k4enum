@@ -218,14 +218,18 @@ const activeStatus = ref(
     value: 0,
   }
 );
+const mainTasks = ["X", "V", "C"]; 
+const defaultSearchValue = mainTasks.join("&");
+const searchValue = ref(route.query.task ? route.query.task : defaultSearchValue);
 
-const searchValue = ref(route.query.search || "");
 const submitSearch = () => {
   page.value = 1;
-  router.push({ query: { search: searchValue.value } });
+
+  router.push({ query: { task: searchValue.value } });
 
   getTasks();
 };
+
 const reload = () => {
   page.value = 1;
   searchValue.value = "";
