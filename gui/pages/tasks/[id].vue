@@ -218,8 +218,8 @@ const activeStatus = ref(
     value: 0,
   }
 );
-const mainTasks = ["X", "V", "C"]; 
-const defaultSearchValue = mainTasks.join("&");
+const mainTasks = ["X", "V", "C"];
+const defaultSearchValue = mainTasks.map(task => `Task=${task}`).join("&");
 const searchValue = ref(route.query.task ? route.query.task : defaultSearchValue);
 
 const submitSearch = () => {
@@ -229,6 +229,7 @@ const submitSearch = () => {
 
   getTasks();
 };
+
 
 const reload = () => {
   page.value = 1;
@@ -263,11 +264,14 @@ const page = ref(+route.query.page || +1);
 const getTasks = async () => {
   loading.value = true;
   try {
-    const taskParams = searchValue.value ? searchValue.value.split("&").map(task => `task=${task.substring(5)}`).join('&') : '';
+    const tasks = searchValue.value ? searchValue.value.split("&") : [];
     const params = {
       page: page.value,
       status: activeStatus.value.id == "all" ? null : activeStatus.value.id,
-      ...taskParams && { task: taskParams },
+      ...tasks.reduce((acc, task, index) => {
+        acc[`task${index}`] = task.substring(5); // Assuming task format is 'Task=X', so we remove 'Task='
+        return acc;
+      }, {}),
     };
 
     const data = await $fetch(`scans/${route.params.id}/tasks`, {
