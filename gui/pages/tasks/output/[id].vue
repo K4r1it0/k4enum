@@ -67,5 +67,5 @@ const copyData = async () => {
     }
   };
   
-  onMounted(fetchData);
+onBeforeMount(fetchData);
 </script>

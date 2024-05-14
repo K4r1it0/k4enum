@@ -320,7 +320,7 @@ const getCounts = async () => {
 };
 
 
-onMounted(() => {
+onBeforeMount(() => {
   getTasks();
   intervalId = setInterval(getTasks, 10000);
 
