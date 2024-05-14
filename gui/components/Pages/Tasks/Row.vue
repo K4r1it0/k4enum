@@ -1,6 +1,5 @@
 <template>
-  <div v-if="item.task_name !== 'MainEnumerationTask' &&item.task_name !== 'YieldWrapper' &&item.task_name !== 'Miscellaneous'"
-  class="p-2 rounded-lg bg-[#121214] grid grid-cols-6 row hover:bg-border transition-all"
+  <div class="p-2 rounded-lg bg-[#121214] grid grid-cols-6 row hover:bg-border transition-all"
     :class="{ 'cursor-pointer': available }"
     @click="available ? navigateToTask(item.task_id,item.task_name) : null"
   >
