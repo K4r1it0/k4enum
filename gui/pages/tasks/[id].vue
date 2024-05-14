@@ -263,7 +263,7 @@ const page = ref(+route.query.page || +1);
 const getTasks = async () => {
   loading.value = true;
   try {
-    const taskParams = searchValue.value ? searchValue.value.split("&").map(task => `task=${task}`) : [];
+    const taskParams = searchValue.value ? searchValue.value.split("&").map(task => task.substring(5)) : [];
     const params = {
       page: page.value,
       status: activeStatus.value.id == "all" ? null : activeStatus.value.id,
@@ -283,6 +283,7 @@ const getTasks = async () => {
   }
   loading.value = false;
 };
+
 getTasks();
 
 const loadingCounts = ref(false);
