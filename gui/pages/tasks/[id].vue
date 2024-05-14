@@ -263,11 +263,11 @@ const page = ref(+route.query.page || +1);
 const getTasks = async () => {
   loading.value = true;
   try {
-    const taskParams = searchValue.value ? searchValue.value.split("&").map(task => task.substring(5)) : [];
+    const taskParams = searchValue.value ? searchValue.value.split("&").map(task => `task=${task.substring(5)}`).join('&') : '';
     const params = {
       page: page.value,
       status: activeStatus.value.id == "all" ? null : activeStatus.value.id,
-      ...taskParams,
+      ...taskParams && { task: taskParams },
     };
 
     const data = await $fetch(`scans/${route.params.id}/tasks`, {
@@ -283,6 +283,7 @@ const getTasks = async () => {
   }
   loading.value = false;
 };
+
 
 getTasks();
 
