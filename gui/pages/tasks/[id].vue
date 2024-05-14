@@ -233,7 +233,7 @@ function convertToSearchParam(defaultSearchValue) {
 const searchValue = ref(convertToDefaultSearchValue(route.query.search) || "Task = 'TaskA' & Task = 'TaskB' & Task = 'TaskC' & Task = 'TaskD'");
 const submitSearch = () => {
   page.value = 1;
-  router.push({ query: { search: convertToSearchParam(searchValue.value) } });
+  router.push({ query: { search: convertToDefaultSearchValue(searchValue.value) } });
 
   getTasks();
 };
