@@ -221,6 +221,10 @@ const activeStatus = ref(
 
 
 function convertToDefaultSearchValue(searchParam) {
+  if (!searchParam) {
+    return '';
+  }
+
   const tasks = searchParam.split('|').map(task => `Task = '${task}'`);
   return tasks.join(' & ');
 }
@@ -233,6 +237,7 @@ function convertToSearchParam(defaultSearchValue) {
 const searchValue = ref(convertToDefaultSearchValue(route.query.search) || "Task = 'TaskA' & Task = 'TaskB' & Task = 'TaskC' & Task = 'TaskD'");
 const submitSearch = () => {
   page.value = 1;
+  
   router.push({ query: { search: convertToDefaultSearchValue(searchValue.value) } });
 
   getTasks();
@@ -250,15 +255,6 @@ const reload = () => {
     router.push({ query: {} });
   getTasks();
 };
-
-const selectedCity = ref();
-const cities = ref([
-  { name: "New York", code: "NY" },
-  { name: "Rome", code: "RM" },
-  { name: "London", code: "LDN" },
-  { name: "Istanbul", code: "IST" },
-  { name: "Paris", code: "PRS" },
-]);
 
 const loading = ref(false);
 
