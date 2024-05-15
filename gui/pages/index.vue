@@ -5,9 +5,10 @@
 </template>
 
 <script setup>
-import { redirect } from 'vue-router'
+import { useRouter } from 'vue-router'
 
-redirect('/scans')
+const router = useRouter()
+router.push('/scans')
 </script>
 
 <style lang="scss" scoped></style>
