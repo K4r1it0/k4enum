@@ -109,15 +109,7 @@
       <div class="mb-2">
         <PagesScansHeader />
 
-        <template v-if="loading">
-          <Skeleton
-            v-for="i in 6"
-            :key="i"
-            height="2rem"
-            class="mb-2"
-          ></Skeleton>
-        </template>
-
+        <template v-if="loading"></template>
         <template v-else-if="scans.length">
           <PagesScansRow
             v-for="(scan, i) in scans"
@@ -340,9 +332,6 @@ const target = ref("");
 const submit = async () => {
   try {
     const frmData = new FormData();
-    // frmData.append("scan_type", selectedType.value.value);
-    // frmData.append("target", target.value);
-
     const data = await $fetch(`scans`, {
       method: "POST",
       baseURL,
@@ -351,10 +340,10 @@ const submit = async () => {
         target: target.value,
       },
     });
-
+    getScans();
     console.log(data);
     visible.value = false;
-    getScans();
+    
   } catch (error) {
     console.log(error);
   }

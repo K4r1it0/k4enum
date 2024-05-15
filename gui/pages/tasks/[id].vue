@@ -12,7 +12,6 @@
           </button>
         </div>
       </div> -->
-  
      
       <div class="container">
         <div class="flex justify-between items-start mb-8">
@@ -114,14 +113,7 @@
         <div class="mb-2">
           <PagesTasksHeader />
   
-          <template v-if="loading">
-            <Skeleton
-              v-for="i in 6"
-              :key="i"
-              height="2rem"
-              class="mb-2"
-            ></Skeleton>
-          </template>
+          <template v-if="loading"></template>
   
           <template v-else>
             <PagesTasksRow
