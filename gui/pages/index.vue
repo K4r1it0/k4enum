@@ -4,6 +4,10 @@
   </div>
 </template>
 
-<script setup></script>
+<script setup>
+import { redirect } from 'vue-router'
+
+redirect('/scans')
+</script>
 
 <style lang="scss" scoped></style>
