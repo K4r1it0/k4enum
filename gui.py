@@ -263,12 +263,12 @@ def count_scans():
         'status_counts': scan_counts
     })
 
+@app.route('/scans/<scan_id>/tasks', methods=['GET'])
 def get_tasks_for_scan(scan_id):
-    excluded_tasks = ('MainEnumerationTask', 'YieldWrapper', 'Miscellaneous')
     page = int(request.args.get('page', 1))
     per_page = int(request.args.get('per_page', 10))
     status = request.args.get('status')
-    search_param = request.args.get('search')
+    search = request.args.get('search')
 
     conn = get_db_connection()
     # Retrieve domain from the scans table
@@ -283,22 +283,15 @@ def get_tasks_for_scan(scan_id):
     base_query = f'''
         SELECT task_id, task_name, status, type, message, timestamp
         FROM task_status
-        WHERE scan_id = ?
+        WHERE scan_id = ? AND task_name NOT IN (?, ?, ?)
     '''
-    params = [scan_id]
+    params = [scan_id, 'MainEnumerationTask', 'YieldWrapper', 'Miscellaneous']
     if status:
         base_query += ' AND status = ?'
         params.append(status)
-    
-    # Filter out excluded tasks
-    base_query += ' AND task_name NOT IN ({})'.format(','.join(['?'] * len(excluded_tasks)))
-    params.extend(excluded_tasks)
-
-    # Convert search parameter to SQL query
-    if search_param:
-        search_values = search_param.split('|')
-        base_query += f' AND task_name IN ({",".join(["?"] * len(search_values))})'
-        params.extend(search_values)
+    if search:
+        base_query += ' AND task_name LIKE ?'
+        params.append(f"%{search}%")
 
     base_query += ' ORDER BY timestamp DESC'
     
