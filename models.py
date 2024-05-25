@@ -199,7 +199,7 @@ class Database:
         scan_counts.append({'status': "all", 'count': total_scans})
         return scan_counts
 
-	@staticmethod
+    @staticmethod
     def get_tasks_for_scan(scan_id, page=1, per_page=10, status=None, search=None):
         domain_query = 'SELECT domain FROM scans WHERE scan_id = ?'
         base_query = '''
@@ -238,7 +238,7 @@ class Database:
                 'per_page': per_page
             }
         }
-        
+
     @staticmethod
     def get_total_count(query, params):
         """ Get total count of rows for a given query and parameters """
