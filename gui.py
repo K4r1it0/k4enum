@@ -4,7 +4,7 @@ import subprocess
 import os
 import re
 import luigi
-from luigi_tasks import MainEnumerationTask
+from tasks import MainEnumerationTask
 from models import Database
 from utils import *
 
