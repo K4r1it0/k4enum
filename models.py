@@ -5,9 +5,40 @@ DATABASE_PATH = 'task_status.db'
 
 class Database:
     @staticmethod
+
     def connect():
         """Establish a connection to the database."""
         return sqlite3.connect(DATABASE_PATH)
+
+    @staticmethod
+    def create_tables():
+        """Create tables if they do not exist."""
+        with Database.connect() as conn:
+            conn.execute('''
+                CREATE TABLE IF NOT EXISTS task_status (
+                    task_id TEXT PRIMARY KEY,
+                    task_name TEXT,
+                    domain TEXT,
+                    status TEXT,
+                    message TEXT,
+                    timestamp TEXT,
+                    type TEXT,
+                    scan_id TEXT,
+                    dir TEXT,
+                    results TEXT,
+                    hasOutput BOOLEAN
+                )
+            ''')
+            conn.execute('''
+                CREATE TABLE IF NOT EXISTS scans (
+                    scan_id TEXT PRIMARY KEY,
+                    scan_type TEXT,
+                    domain TEXT,
+                    timestamp TEXT,
+                    status TEXT
+                )
+            ''')
+            conn.commit()
 
     @staticmethod
     def get_task_details(task_id):
