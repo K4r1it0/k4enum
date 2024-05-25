@@ -95,11 +95,16 @@ def get_tasks_for_scan(scan_id):
     if domain is None:
         return jsonify({'error': 'No scan found with the given scan ID'}), 404
 
-    task_list = [
-        {'task_id': task[0], 'task_name': task[1], 'status': task[2],
-         'type': task[3], 'updatedAt': task[5]}  # Use index notation for tuple elements
-        for task in tasks
-    ]
+    task_list = []
+    for task in tasks:
+        if len(task) >= 6:  # Ensure the task tuple has at least 6 elements
+            task_list.append({
+                'task_id': task[0],
+                'task_name': task[1],
+                'status': task[2],
+                'type': task[3],
+                'updatedAt': task[5]
+            })
 
     total_pages = (total_count + per_page - 1) // per_page
 
