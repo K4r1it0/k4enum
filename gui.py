@@ -96,10 +96,10 @@ def get_tasks_for_scan(scan_id):
         return jsonify({'error': 'No scan found with the given scan ID'}), 404
 
     task_list = [
-    {'task_id': task[0], 'task_name': task[1], 'status': task[2],
-     'type': task[3], 'updatedAt': task[5]}  # Change 'task['task_id']' to 'task[0]', and similarly for other fields
-    for task in tasks
-]
+        {'task_id': task[0], 'task_name': task[1], 'status': task[2],
+         'type': task[3], 'updatedAt': task[5]}  # Use index notation for tuple elements
+        for task in tasks
+    ]
 
     total_pages = (total_count + per_page - 1) // per_page
 
@@ -113,6 +113,7 @@ def get_tasks_for_scan(scan_id):
             'per_page': per_page
         }
     })
+
 
 @app.route('/download/<task_id>', methods=['GET'])
 def download_file(task_id):
