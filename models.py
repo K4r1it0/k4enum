@@ -59,7 +59,7 @@ class Database:
 	def get_scans(params, status, search, page, per_page):
 	    """ Get paginated scan results based on status and search """
 	    base_query = '''
-	        SELECT scan_id, scan_type, domain, created_at, status
+	        SELECT scan_id, scan_type, domain, timestamp, status
 	        FROM scans
 	    '''
 	    where_clauses = []
@@ -73,7 +73,7 @@ class Database:
 	    if where_clauses:
 	        base_query += ' WHERE ' + ' AND '.join(where_clauses)
 
-	    base_query += ' ORDER BY created_at DESC'
+	    base_query += ' ORDER BY timestamp DESC'
 	    
 	    total_count = Database.get_total_count(base_query, params)
 	    paginated_query = Database.paginate_query(base_query, page, per_page)
