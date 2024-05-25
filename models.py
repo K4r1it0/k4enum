@@ -201,54 +201,41 @@ class Database:
 
 
     @staticmethod
-    def get_tasks_for_scan(scan_id, params, status, search, page, per_page):
-        """ Get paginated tasks for a scan based on status and search """
+    def get_tasks_for_scan(scan_id, page=1, per_page=10, status=None, search=None):
         domain_query = 'SELECT domain FROM scans WHERE scan_id = ?'
         base_query = '''
             SELECT task_id, task_name, status, type, message, timestamp
             FROM task_status
             WHERE scan_id = ? AND task_name NOT IN (?, ?, ?)
         '''
+        task_names_to_exclude = ['task_name_1', 'task_name_2', 'task_name_3']  # Replace with actual task names
+        query_params = (scan_id,) + tuple(task_names_to_exclude)
+
         with Database.connect() as conn:
             domain_result = conn.execute(domain_query, (scan_id,)).fetchone()
             domain = domain_result[0] if domain_result else None
 
-        params.append(scan_id)
-        excluded_tasks = ('MainEnumerationTask', 'YieldWrapper', 'Miscellaneous')
-        params.extend(excluded_tasks)
-        where_clauses = []
-        if status:
-            where_clauses.append("status = ?")
-            params.append(status)
-        if search:
-            where_clauses.append("task_name LIKE ?")
-            params.append(f"%{search}%")
+            tasks_result = conn.execute(base_query, query_params).fetchall()
 
-        if where_clauses:
-            base_query += ' AND ' + ' AND '.join(where_clauses)
+            task_list = [
+                {'task_id': task[0], 'task_name': task[1], 'status': task[2], 'type': task[3], 'message': task[4], 'timestamp': task[5]}
+                for task in tasks_result
+            ]
 
-        base_query += ' ORDER BY timestamp DESC'
-        
-        total_count = Database.get_total_count(base_query, params)
-        paginated_query = Database.paginate_query(base_query, page, per_page)
-        with Database.connect() as conn:
-            tasks = conn.execute(paginated_query, params).fetchall()
+            total_count = len(task_list)
+            total_pages = (total_count + per_page - 1) // per_page
+            paginated_tasks = task_list[(page - 1) * per_page: page * per_page]
 
-        # Convert each tuple to a dictionary for JSON serialization
-        task_list = []
-        for task in tasks:
-            task_dict = {
-                'task_id': task[0],
-                'task_name': task[1],
-                'status': task[2],
-                'type': task[3],
-                'message': task[4],
-                'timestamp': task[5],
-                'domain': domain
+        return {
+            'domain': domain,
+            'data': paginated_tasks,
+            'pagination': {
+                'total_items': total_count,
+                'total_pages': total_pages,
+                'current_page': page,
+                'per_page': per_page
             }
-            task_list.append(task_dict)
-        
-        return domain, task_list, total_count
+        }
 
     @staticmethod
     def get_total_count(query, params):
