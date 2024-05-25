@@ -120,6 +120,7 @@ def get_tasks_for_scan(scan_id):
     })
 
 
+
 @app.route('/download/<task_id>', methods=['GET'])
 def download_file(task_id):
     task = Database.get_task_details(task_id)
