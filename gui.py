@@ -115,7 +115,7 @@ def get_tasks_for_scan(scan_id):
                 'message': task[4],  # Include message if available
                 'updatedAt': task[5]
             })
-
+    print(total_count,per_page)
     total_pages = (int(total_count) + int(per_page) - 1) // int(per_page)
 
 
