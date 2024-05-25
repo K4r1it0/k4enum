@@ -1,7 +1,7 @@
 from flask import Flask, jsonify, request, send_from_directory, abort
 from tasks import MainEnumerationTask
 from flask_cors import CORS
-from datetime import datetime
+from datetime import datetime as dt
 from models import Database
 from utils import *
 import subprocess
@@ -27,7 +27,7 @@ def create_scan():
 
 def run_enumeration_tasks(domain, scan_type):
     scan_id = str(uuid.uuid4())
-    timestamp = datetime.now().isoformat()
+    timestamp = dt.now().isoformat()
     save_directory = create_directory(domain)
     
     try:
