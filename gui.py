@@ -107,7 +107,7 @@ def get_tasks_for_scan(scan_id):
                 'updatedAt': task[5]
             })
 
-    total_pages = (total_count + int(per_page) - 1) // int(per_page)
+    total_pages = (int(total_count) + int(per_page) - 1) // int(per_page)
 
 
     return jsonify({
