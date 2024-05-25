@@ -91,7 +91,7 @@ def get_tasks_for_scan(scan_id):
     search = request.args.get('search')
 
     params = []
-    domain, tasks, total_count = Database.get_tasks_for_scan(scan_id, params, status, search, page, per_page)
+    domain, tasks, total_count = Database.get_tasks_for_scan(scan_id, page, per_page, status, search)
     if domain is None:
         return jsonify({'error': 'No scan found with the given scan ID'}), 404
 
