@@ -53,9 +53,9 @@ class Database:
                 SET status = ?
                 WHERE scan_id = ?
             ''', (new_status, scan_id))
-            conn.commit()
+			conn.commit()
 
-    @staticmethod
+	@staticmethod
 	def get_scans(params, status, search, page, per_page):
 	    """ Get paginated scan results based on status and search """
 	    base_query = '''
