@@ -4,18 +4,19 @@ from datetime import datetime
 DATABASE_PATH = 'task_status.db'
 
 class Database:
-	@staticmethod
-	def connect():
-		""" Establish a connection to the database """
-		return sqlite3.connect(DATABASE_PATH)
-	@staticmethod
-	def get_task_details(task_id):
-        """Fetch directory, task_name, and type for a given task_id."""
-		query = 'SELECT dir, task_name, type FROM task_status WHERE task_id = ?'
-		with Database.connect() as conn:
-			task = conn.execute(query, (task_id,)).fetchone()
-		return task
+    @staticmethod
+    def connect():
+        """Establish a connection to the database."""
+        return sqlite3.connect(DATABASE_PATH)
 
+    @staticmethod
+    def get_task_details(task_id):
+        """Fetch directory, task_name, and type for a given task_id."""
+        query = 'SELECT dir, task_name, type FROM task_status WHERE task_id = ?'
+        with Database.connect() as conn:
+            task = conn.execute(query, (task_id,)).fetchone()
+        return task
+        
 	@staticmethod
 	def insert_initial_status(task_id, task_family, domain, save_directory, case, scan_id):
 		status = 'pending'
