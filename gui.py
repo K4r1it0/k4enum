@@ -55,7 +55,7 @@ def get_scans():
     status = request.args.get('status')
     search = request.args.get('search')
     try:
-        per_page = int(per_page_str)
+        per_page = int(per_page)
     except ValueError:
         per_page = 10
 
@@ -93,6 +93,11 @@ def get_tasks_for_scan(scan_id):
     per_page = int(request.args.get('per_page', 10))
     status = request.args.get('status')
     search = request.args.get('search')
+
+    try:
+        per_page = int(per_page)
+    except ValueError:
+        per_page = 10
 
     params = []
     domain, tasks, total_count = Database.get_tasks_for_scan(scan_id, page, per_page, status, search)
