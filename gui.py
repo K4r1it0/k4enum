@@ -54,6 +54,10 @@ def get_scans():
     per_page = int(request.args.get('per_page', 10))
     status = request.args.get('status')
     search = request.args.get('search')
+    try:
+        per_page = int(per_page_str)
+    except ValueError:
+        per_page = 10
 
     params = []
     scans, total_count = Database.get_scans(params, status, search, page, per_page)
@@ -108,6 +112,7 @@ def get_tasks_for_scan(scan_id):
             })
 
     total_pages = (int(total_count) + int(per_page) - 1) // int(per_page)
+
 
 
     return jsonify({
