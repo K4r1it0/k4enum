@@ -10,6 +10,8 @@ import uuid
 import os
 import re
 import luigi
+import logging
+
 
 app = Flask(__name__)
 CORS(app)
