@@ -15,7 +15,9 @@ class Database:
 		query = 'SELECT dir, task_name, type FROM task_status WHERE task_id = ?'
 		with Database.connect() as conn:
 			task = conn.execute(query, (task_id,)).fetchone()
-		return task
+			if task:
+				return {'dir': task[0], 'task_name': task[1], 'type': task[2]}
+		return None
 
 	@staticmethod
 	def insert_initial_status(task_id, task_family, domain, save_directory, case, scan_id):
