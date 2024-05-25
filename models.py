@@ -87,7 +87,7 @@ class Database:
 	            'scan_id': scan[0],
 	            'scan_type': scan[1],
 	            'domain': scan[2],
-	            'createdAt': scan[3],
+	            'timestamp': scan[3],
 	            'status': scan[4]
 	        }
 	        scan_list.append(scan_dict)
