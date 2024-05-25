@@ -150,6 +150,14 @@ class Database:
 		scan_counts = [{'status': status, 'count': scan_counts_dict[status]} for status in possible_statuses]
 		scan_counts.append({'status': "all", 'count': total_scans})
 		return scan_counts
+		
+	@staticmethod
+    def get_task_details(task_id):
+        """Fetch directory, task_name, and type for a given task_id."""
+        query = 'SELECT dir, task_name, type FROM task_status WHERE task_id = ?'
+        with Database.connect() as conn:
+            task = conn.execute(query, (task_id,)).fetchone()
+        return task
 
 	@staticmethod
 	def get_tasks_for_scan(scan_id, params, status, search, page, per_page):

@@ -1,8 +1,24 @@
 import os
 import datetime
 import re
+from flask import send_from_directory, abort
+from models import Database
 save_directory = "results"
 
+
+def download_file(task_id):
+    task = Database.get_task_details(task_id)
+    if task and task[0] and task[1] and task[2]:
+        directory, task_name, task_type = task
+        file_name = f"{task_name}-{task_type}"
+        file_path = os.path.join(directory, file_name)  # Adjust as needed for your file extension
+
+        if os.path.exists(file_path):
+            return send_from_directory(directory, file_name, as_attachment=True)
+        else:
+            abort(404, description="File not found")
+    else:
+        abort(404, description="Task not found or incomplete data")
 
 def is_valid_domain(domain):
     """Check if the provided domain is valid."""
