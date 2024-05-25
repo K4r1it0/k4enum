@@ -47,49 +47,52 @@ class Database:
     @staticmethod
     def update_scan_status(scan_id, new_status):
         with Database.connect() as conn:
-        	cur = conn.cursor()
-            cur.execute('''UPDATE scans SET status = ? WHERE scan_id = ?''', (new_status, scan_id))
+            cur = conn.cursor()
+            cur.execute('''
+                UPDATE scans
+                SET status = ?
+                WHERE scan_id = ?
+            ''', (new_status, scan_id))
             conn.commit()
 
-	@staticmethod
-	def get_scans(params, status, search, page, per_page):
-	    """ Get paginated scan results based on status and search """
-	    base_query = '''
-	        SELECT scan_id, scan_type, domain, timestamp, status
-	        FROM scans
-	    '''
-	    where_clauses = []
-	    if status:
-	        where_clauses.append("status = ?")
-	        params.append(status)
-	    if search:
-	        where_clauses.append("domain LIKE ?")
-	        params.append(f"%{search}%")
+    @staticmethod
+    def get_scans(params, status, search, page, per_page):
+        """ Get paginated scan results based on status and search """
+        base_query = '''
+            SELECT scan_id, scan_type, domain, timestamp, status
+            FROM scans
+        '''
+        where_clauses = []
+        if status:
+            where_clauses.append("status = ?")
+            params.append(status)
+        if search:
+            where_clauses.append("domain LIKE ?")
+            params.append(f"%{search}%")
 
-	    if where_clauses:
-	        base_query += ' WHERE ' + ' AND '.join(where_clauses)
+        if where_clauses:
+            base_query += ' WHERE ' + ' AND '.join(where_clauses)
 
-	    base_query += ' ORDER BY timestamp DESC'
-	    
-	    total_count = Database.get_total_count(base_query, params)
-	    paginated_query = Database.paginate_query(base_query, page, per_page)
-	    with Database.connect() as conn:
-	        scans = conn.execute(paginated_query, params).fetchall()
+        base_query += ' ORDER BY timestamp DESC'
+        
+        total_count = Database.get_total_count(base_query, params)
+        paginated_query = Database.paginate_query(base_query, page, per_page)
+        with Database.connect() as conn:
+            scans = conn.execute(paginated_query, params).fetchall()
 
-	    # Convert each tuple to a dictionary for JSON serialization
-	    scan_list = []
-	    for scan in scans:
-	        scan_dict = {
-	            'scan_id': scan[0],
-	            'scan_type': scan[1],
-	            'domain': scan[2],
-	            'createdAt': scan[3],
-	            'status': scan[4]
-	        }
-	        scan_list.append(scan_dict)
-	    
-	    return scan_list, total_count
-
+        # Convert each tuple to a dictionary for JSON serialization
+        scan_list = []
+        for scan in scans:
+            scan_dict = {
+                'scan_id': scan[0],
+                'scan_type': scan[1],
+                'domain': scan[2],
+                'createdAt': scan[3],
+                'status': scan[4]
+            }
+            scan_list.append(scan_dict)
+        
+        return scan_list, total_count
 
     @staticmethod
     def count_tasks_by_scan(scan_id):
@@ -112,10 +115,10 @@ class Database:
         
         task_counts = {'failed': 0, 'running': 0, 'pending': 0, 'done': 0}
         for task in tasks:
-            if task['status'] in task_counts:
-                task_counts[task['status']] = task['count']
+            if task[0] in task_counts:
+                task_counts[task[0]] = task[1]
         
-        total_tasks = total_result['total'] if total_result else 0
+        total_tasks = total_result[0] if total_result else 0
         task_counts['all'] = total_tasks
 
         return [{'status': status, 'count': count} for status, count in task_counts.items()]
@@ -136,12 +139,12 @@ class Database:
             scans = conn.execute(status_query).fetchall()
             total_result = conn.execute(total_query).fetchone()
 
-        total_scans = total_result['total'] if total_result else 0
+        total_scans = total_result[0] if total_result else 0
         possible_statuses = ['done', 'failed', 'running', 'pending']
         scan_counts_dict = {status: 0 for status in possible_statuses}
         for scan in scans:
-            if scan['status'] in scan_counts_dict:
-            	scan_counts_dict[scan['status']] = scan['count']
+            if scan[0] in scan_counts_dict:
+                scan_counts_dict[scan[0]] = scan[1]
 
         scan_counts = [{'status': status, 'count': scan_counts_dict[status]} for status in possible_statuses]
         scan_counts.append({'status': "all", 'count': total_scans})
@@ -158,7 +161,7 @@ class Database:
         '''
         with Database.connect() as conn:
             domain_result = conn.execute(domain_query, (scan_id,)).fetchone()
-            domain = domain_result['domain'] if domain_result else None
+            domain = domain_result[0] if domain_result else None
             if not domain:
                 return None, None
 
@@ -176,7 +179,20 @@ class Database:
             paginated_query = Database.paginate_query(base_query, page, per_page)
             tasks = conn.execute(paginated_query, params).fetchall()
         
-        return domain, tasks, total_count
+        # Convert each tuple to a dictionary for JSON serialization
+        task_list = []
+        for task in tasks:
+            task_dict = {
+                'task_id': task[0],
+                'task_name': task[1],
+                'status': task[2],
+                'type': task[3],
+                'message': task[4],
+                'timestamp': task[5]
+            }
+            task_list.append(task_dict)
+        
+        return domain, task_list, total_count
 
     @staticmethod
     def get_total_count(query, params):
