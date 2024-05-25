@@ -47,13 +47,13 @@ class Database:
     @staticmethod
     def update_scan_status(scan_id, new_status):
         with Database.connect() as conn:
-            cur = conn.cursor()
+        	cur = conn.cursor()
             cur.execute('''
                 UPDATE scans
                 SET status = ?
                 WHERE scan_id = ?
             ''', (new_status, scan_id))
-			conn.commit()
+            conn.commit()
 
 	@staticmethod
 	def get_scans(params, status, search, page, per_page):
