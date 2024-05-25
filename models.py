@@ -16,7 +16,7 @@ class Database:
         with Database.connect() as conn:
             task = conn.execute(query, (task_id,)).fetchone()
         return task
-        
+
 	@staticmethod
 	def insert_initial_status(task_id, task_family, domain, save_directory, case, scan_id):
 		status = 'pending'
