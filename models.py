@@ -5,20 +5,20 @@ DATABASE_PATH = 'task_status.db'
 
 class Database:
     @staticmethod
-
     def connect():
         """Establish a connection to the database."""
         return sqlite3.connect(DATABASE_PATH)
-	@staticmethod
-	def insert_scan(scan_id, domain, scan_type, timestamp, status):
-	    """Insert a new scan record into the database."""
-	    with Database.connect() as conn:
-	        cur = conn.cursor()
-	        cur.execute('''
-	            INSERT INTO scans (scan_id, domain, scan_type, timestamp, status)
-	            VALUES (?, ?, ?, ?, ?)
-	        ''', (scan_id, domain, scan_type, timestamp, status))
-	        conn.commit()
+
+    @staticmethod
+    def insert_scan(scan_id, domain, scan_type, timestamp, status):
+        """Insert a new scan record into the database."""
+        with Database.connect() as conn:
+            cur = conn.cursor()
+            cur.execute('''
+                INSERT INTO scans (scan_id, domain, scan_type, timestamp, status)
+                VALUES (?, ?, ?, ?, ?)
+            ''', (scan_id, domain, scan_type, timestamp, status))
+            conn.commit()
 
     @staticmethod
     def create_tables():
@@ -49,6 +49,9 @@ class Database:
                 )
             ''')
             conn.commit()
+
+    # Other methods remain the same
+
 
     @staticmethod
     def get_task_details(task_id):
