@@ -223,7 +223,7 @@ class Database:
             ]
 
             total_count = len(task_list)
-            total_pages = (total_count + int(per_page) - 1) // int(per_page)
+            total_pages = (int(total_count) + int(per_page) - 1) // int(per_page)
             paginated_tasks = task_list[(page - 1) * per_page: page * per_page]
 
         return {
