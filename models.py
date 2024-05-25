@@ -40,6 +40,16 @@ class Database:
             conn.commit()
 
     @staticmethod
+    def get_task_results(task_id):
+        query = 'SELECT results FROM task_status WHERE task_id = ?'
+        with Database.connect() as conn:
+            results = conn.execute(query, (task_id,)).fetchone()
+            if results:
+                return results[0]
+        return None
+
+
+    @staticmethod
     def insert_scan(scan_id, domain, scan_type, timestamp, status):
         """Insert a new scan record into the database."""
         with Database.connect() as conn:
@@ -218,7 +228,7 @@ class Database:
             tasks_result = conn.execute(tasks_query, query_params).fetchall()
 
             task_list = [
-                {'task_id': task[0], 'task_name': task[1], 'status': task[2], 'type': task[3], 'message': task[4], 'timestamp': task[5]}
+                {'task_id': task[0], 'task_name': task[1], 'status': task[2], 'type': task[3], 'message': task[4], 'updatedAt': task[5]}
                 for task in tasks_result
             ]
 

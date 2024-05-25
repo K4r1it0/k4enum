@@ -32,21 +32,13 @@ def create_scan():
     
     return 'Scan started successfully'
 
-def run_enumeration_tasks(domain, scan_type):
-    scan_id = str(uuid.uuid4())
-    timestamp = dt.now().isoformat()
-    save_directory = create_directory(domain)
-    
-    try:
-        Database.insert_scan(scan_id, domain, scan_type, timestamp, 'running')
-        logging.info(f"Inserted scan record: {scan_id}")
-    except sqlite3.Error as e:
-        logging.error(f"Database error: {e}")
-        return
-    
-    # Build tasks linked to this scan
-    luigi.build([MainEnumerationTask(scan_type=scan_type, domain=domain, save_directory=save_directory, scan_id=scan_id)], workers=50, local_scheduler=True)
-    logging.info("Luigi tasks have been built and are running.")
+@app.route('/tasks/<task_id>/results', methods=['GET'])
+def get_task_results_by_id(task_id):
+    results = Database.get_task_results(task_id)
+    if results is not None:
+        return jsonify({'task_id': task_id, 'results': results})
+    else:
+        return jsonify({'error': 'Task not found'}), 404
 
 @app.route('/scans', methods=['GET'])
 def get_scans():
