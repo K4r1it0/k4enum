@@ -55,44 +55,45 @@ class Database:
 			''', (new_status, scan_id))
 			conn.commit()
 
-	@staticmethod
-	def get_scans(params, status, search, page, per_page):
-		""" Get paginated scan results based on status and search """
-		base_query = '''
-			SELECT scan_id, scan_type, domain, timestamp, status
-			FROM scans
-		'''
-		where_clauses = []
-		if status:
-			where_clauses.append("status = ?")
-			params.append(status)
-		if search:
-			where_clauses.append("domain LIKE ?")
-			params.append(f"%{search}%")
+@staticmethod
+def get_scans(params, status, search, page, per_page):
+    """ Get paginated scan results based on status and search """
+    base_query = '''
+        SELECT scan_id, scan_type, domain, created_at, status
+        FROM scans
+    '''
+    where_clauses = []
+    if status:
+        where_clauses.append("status = ?")
+        params.append(status)
+    if search:
+        where_clauses.append("domain LIKE ?")
+        params.append(f"%{search}%")
 
-		if where_clauses:
-			base_query += ' WHERE ' + ' AND '.join(where_clauses)
+    if where_clauses:
+        base_query += ' WHERE ' + ' AND '.join(where_clauses)
 
-		base_query += ' ORDER BY timestamp DESC'
-		
-		total_count = Database.get_total_count(base_query, params)
-		paginated_query = Database.paginate_query(base_query, page, per_page)
-		with Database.connect() as conn:
-			scans = conn.execute(paginated_query, params).fetchall()
+    base_query += ' ORDER BY created_at DESC'
+    
+    total_count = Database.get_total_count(base_query, params)
+    paginated_query = Database.paginate_query(base_query, page, per_page)
+    with Database.connect() as conn:
+        scans = conn.execute(paginated_query, params).fetchall()
 
-		# Convert each tuple to a dictionary for JSON serialization
-		scan_list = []
-		for scan in scans:
-			scan_dict = {
-				'scan_id': scan[0],
-				'scan_type': scan[1],
-				'domain': scan[2],
-				'createdAt': scan[3],
-				'status': scan[4]
-			}
-			scan_list.append(scan_dict)
-		
-		return scan_list, total_count
+    # Convert each tuple to a dictionary for JSON serialization
+    scan_list = []
+    for scan in scans:
+        scan_dict = {
+            'scan_id': scan[0],
+            'scan_type': scan[1],
+            'domain': scan[2],
+            'createdAt': scan[3],
+            'status': scan[4]
+        }
+        scan_list.append(scan_dict)
+    
+    return scan_list, total_count
+
 
 	@staticmethod
 	def count_tasks_by_scan(scan_id):
