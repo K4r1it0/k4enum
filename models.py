@@ -4,18 +4,18 @@ from datetime import datetime
 DATABASE_PATH = 'task_status.db'
 
 class Database:
-    @staticmethod
-    def connect():
-        """Establish a connection to the database."""
-        return sqlite3.connect(DATABASE_PATH)
+	@staticmethod
+	def connect():
+		"""Establish a connection to the database."""
+		return sqlite3.connect(DATABASE_PATH)
 
-    @staticmethod
-    def get_task_details(task_id):
-        """Fetch directory, task_name, and type for a given task_id."""
-        query = 'SELECT dir, task_name, type FROM task_status WHERE task_id = ?'
-        with Database.connect() as conn:
-            task = conn.execute(query, (task_id,)).fetchone()
-        return task
+	@staticmethod
+	def get_task_details(task_id):
+		"""Fetch directory, task_name, and type for a given task_id."""
+		query = 'SELECT dir, task_name, type FROM task_status WHERE task_id = ?'
+		with Database.connect() as conn:
+			task = conn.execute(query, (task_id,)).fetchone()
+		return task
 
 	@staticmethod
 	def insert_initial_status(task_id, task_family, domain, save_directory, case, scan_id):
@@ -34,9 +34,7 @@ class Database:
 		timestamp = datetime.now().isoformat()
 		with Database.connect() as conn:
 			cur = conn.cursor()
-			cur.execute('''
-				SELECT * FROM task_status WHERE task_id = ?
-			''', (task_id,))
+			cur.execute('SELECT * FROM task_status WHERE task_id = ?', (task_id,))
 			exists = cur.fetchone()
 
 			if exists:
@@ -65,43 +63,42 @@ class Database:
 
 	@staticmethod
 	def get_scans(params, status, search, page, per_page):
-	    """ Get paginated scan results based on status and search """
-	    base_query = '''
-	        SELECT scan_id, scan_type, domain, timestamp, status
-	        FROM scans
-	    '''
-	    where_clauses = []
-	    if status:
-	        where_clauses.append("status = ?")
-	        params.append(status)
-	    if search:
-	        where_clauses.append("domain LIKE ?")
-	        params.append(f"%{search}%")
+		""" Get paginated scan results based on status and search """
+		base_query = '''
+			SELECT scan_id, scan_type, domain, timestamp, status
+			FROM scans
+		'''
+		where_clauses = []
+		if status:
+			where_clauses.append("status = ?")
+			params.append(status)
+		if search:
+			where_clauses.append("domain LIKE ?")
+			params.append(f"%{search}%")
 
-	    if where_clauses:
-	        base_query += ' WHERE ' + ' AND '.join(where_clauses)
+		if where_clauses:
+			base_query += ' WHERE ' + ' AND '.join(where_clauses)
 
-	    base_query += ' ORDER BY timestamp DESC'
-	    
-	    total_count = Database.get_total_count(base_query, params)
-	    paginated_query = Database.paginate_query(base_query, page, per_page)
-	    with Database.connect() as conn:
-	        scans = conn.execute(paginated_query, params).fetchall()
+		base_query += ' ORDER BY timestamp DESC'
+		
+		total_count = Database.get_total_count(base_query, params)
+		paginated_query = Database.paginate_query(base_query, page, per_page)
+		with Database.connect() as conn:
+			scans = conn.execute(paginated_query, params).fetchall()
 
-	    # Convert each tuple to a dictionary for JSON serialization
-	    scan_list = []
-	    for scan in scans:
-	        scan_dict = {
-	            'scan_id': scan[0],
-	            'scan_type': scan[1],
-	            'domain': scan[2],
-	            'timestamp': scan[3],
-	            'status': scan[4]
-	        }
-	        scan_list.append(scan_dict)
-	    
-	    return scan_list, total_count
-
+		# Convert each tuple to a dictionary for JSON serialization
+		scan_list = []
+		for scan in scans:
+			scan_dict = {
+				'scan_id': scan[0],
+				'scan_type': scan[1],
+				'domain': scan[2],
+				'timestamp': scan[3],
+				'status': scan[4]
+			}
+			scan_list.append(scan_dict)
+		
+		return scan_list, total_count
 
 	@staticmethod
 	def count_tasks_by_scan(scan_id):
