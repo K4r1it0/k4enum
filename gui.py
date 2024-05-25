@@ -4,7 +4,7 @@ from flask_cors import CORS
 from models import Database
 from utils import *
 import subprocess
-import uuid4
+import uuid
 import os
 import re
 import luigi
