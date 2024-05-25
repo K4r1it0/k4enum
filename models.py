@@ -55,7 +55,6 @@ class Database:
             ''', (new_status, scan_id))
             conn.commit()
 
-    @staticmethod
 	@staticmethod
 	def get_scans(params, status, search, page, per_page):
 	    """ Get paginated scan results based on status and search """
@@ -94,6 +93,7 @@ class Database:
 	        scan_list.append(scan_dict)
 	    
 	    return scan_list, total_count
+
 
     @staticmethod
     def count_tasks_by_scan(scan_id):
