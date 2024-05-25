@@ -2,6 +2,7 @@ from flask import Flask, jsonify, request, send_from_directory, abort
 from tasks import MainEnumerationTask
 from flask_cors import CORS
 from datetime import datetime as dt
+import sqlite3
 from models import Database
 from utils import *
 import subprocess
