@@ -100,36 +100,11 @@ def get_tasks_for_scan(scan_id):
         per_page = 10
 
     params = []
-    domain, tasks, total_count = Database.get_tasks_for_scan(scan_id, page, per_page, status, search)
-    if domain is None:
+    result = Database.get_tasks_for_scan(scan_id, page, per_page, status, search)
+    if result['domain'] is None:
         return jsonify({'error': 'No scan found with the given scan ID'}), 404
 
-    task_list = []
-    for task in tasks:
-        if len(task) >= 6:  # Ensure the task tuple has at least 6 elements
-            task_list.append({
-                'task_id': task[0],
-                'task_name': task[1],
-                'status': task[2],
-                'type': task[3],
-                'message': task[4],  # Include message if available
-                'updatedAt': task[5]
-            })
-    print(total_count,per_page)
-    total_pages = (int(total_count) + int(per_page) - 1) // int(per_page)
-
-
-
-    return jsonify({
-        'domain': domain,
-        'data': task_list,
-        'pagination': {
-            'total_items': total_count,
-            'total_pages': total_pages,
-            'current_page': page,
-            'per_page': per_page
-        }
-    })
+    return jsonify(result)
 
 
 

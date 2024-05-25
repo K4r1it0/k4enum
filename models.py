@@ -214,23 +214,23 @@ class Database:
             domain_result = conn.execute(domain_query, (scan_id,)).fetchone()
             domain = domain_result[0] if domain_result else None
 
-            tasks_result = conn.execute(base_query, query_params).fetchall()
+            tasks_query = Database.paginate_query(base_query, page, per_page)
+            tasks_result = conn.execute(tasks_query, query_params).fetchall()
 
             task_list = [
                 {'task_id': task[0], 'task_name': task[1], 'status': task[2], 'type': task[3], 'message': task[4], 'timestamp': task[5]}
                 for task in tasks_result
             ]
 
-            total_count = len(task_list)
-            total_pages = (total_count + per_page - 1) // per_page
-            paginated_tasks = task_list[(page - 1) * per_page: page * per_page]
+            total_count_query = 'SELECT COUNT(*) FROM task_status WHERE scan_id = ? AND task_name NOT IN (?, ?, ?)'
+            total_count_result = conn.execute(total_count_query, query_params).fetchone()
+            total_count = total_count_result[0] if total_count_result else 0
 
-        if not isinstance(per_page, int):
-            per_page = 10
+            total_pages = (total_count + per_page - 1) // per_page
 
         return {
             'domain': domain,
-            'data': paginated_tasks,
+            'data': task_list,
             'pagination': {
                 'total_items': total_count,
                 'total_pages': total_pages,
