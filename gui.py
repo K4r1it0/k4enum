@@ -2,6 +2,7 @@ from flask import Flask, jsonify, request, send_from_directory, abort
 from tasks import MainEnumerationTask
 from flask_cors import CORS
 from datetime import datetime as dt
+from multiprocessing import Process
 import sqlite3
 from models import Database
 from utils import *
@@ -18,15 +19,18 @@ CORS(app)
 
 @app.route('/scans', methods=['POST'])
 def create_scan():
-    data = request.get_json()
-    scan_type = data.get('type')
+    data = request.json
     target = data.get('target')
-
-    if is_valid_domain(target):
-        run_enumeration_tasks(target, scan_type)
-        return jsonify({'message': 'Scan successfully initiated'}), 200
-    else:
-        return jsonify({'error': 'Invalid domain provided'}), 400
+    scan_type = data.get('type')
+    
+    if not is_valid_domain(target):
+        return 'Invalid domain', 400
+    
+    # Start a new process to run the enumeration tasks
+    p = Process(target=run_enumeration_tasks, args=(target, scan_type))
+    p.start()
+    
+    return 'Scan started successfully'
 
 def run_enumeration_tasks(domain, scan_type):
     scan_id = str(uuid.uuid4())
