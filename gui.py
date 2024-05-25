@@ -97,12 +97,13 @@ def get_tasks_for_scan(scan_id):
 
     task_list = []
     for task in tasks:
-        if task:  # Check if task is not empty
+        if len(task) >= 6:  # Ensure the task tuple has at least 6 elements
             task_list.append({
                 'task_id': task[0],
                 'task_name': task[1],
                 'status': task[2],
                 'type': task[3],
+                'message': task[4],  # Include message if available
                 'updatedAt': task[5]
             })
 
