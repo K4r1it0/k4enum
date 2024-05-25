@@ -88,10 +88,11 @@ def get_tasks_for_scan(scan_id):
         return jsonify({'error': 'No scan found with the given scan ID'}), 404
 
     task_list = [
-        {'task_id': task['task_id'], 'task_name': task['task_name'], 'status': task['status'],
-         'type': task['type'], 'updatedAt': task['timestamp']}
-        for task in tasks
-    ]
+    {'task_id': task[0], 'task_name': task[1], 'status': task[2],
+     'type': task[3], 'updatedAt': task[5]}  # Change 'task['task_id']' to 'task[0]', and similarly for other fields
+    for task in tasks
+]
+
     total_pages = (total_count + per_page - 1) // per_page
 
     return jsonify({
