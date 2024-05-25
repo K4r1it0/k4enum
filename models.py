@@ -207,7 +207,7 @@ class Database:
             FROM task_status
             WHERE scan_id = ? AND task_name NOT IN (?, ?, ?)
         '''
-        task_names_to_exclude = ['task_name_1', 'task_name_2', 'task_name_3']  # Replace with actual task names
+        task_names_to_exclude = ['MainEnumerationTask', 'YieldWrapper', 'Miscellaneous']  # Replace with actual task names
         query_params = (scan_id,) + tuple(task_names_to_exclude)
 
         with Database.connect() as conn:
