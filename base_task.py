@@ -19,8 +19,8 @@ class BaseTask(luigi.Task):
     def insert_initial_status(self):
         Database.insert_initial_status(self.task_id, self.task_family, self.domain, self.save_directory, self.case, self.scan_id)
 
-    def update_status(self, status, message=''):
-        Database.update_status(self.task_id, status, message, self.task_family, self.domain, self.case, self.scan_id, self.save_directory)
+    def update_status(self, status, message='', results=None, has_output=False):
+        Database.update_status(self.task_id, status, message, self.task_family, self.domain, self.case, self.scan_id, self.save_directory, results, has_output)
 
     def update_scan_status(self, new_status):
         Database.update_scan_status(self.scan_id, new_status)
@@ -31,11 +31,16 @@ class BaseTask(luigi.Task):
         try:
             with open(output_path, 'w') as file:
                 subprocess.run(cmd, shell=True, check=True, stdout=file, stderr=subprocess.STDOUT)
-            self.update_status('done')
+            
+            with open(output_path, 'r') as file:
+                output = file.read()
+            
+            self.update_status('done', results=output, has_output=True)
         except subprocess.CalledProcessError as e:
+            error_message = f"Command failed with error: {e}"
             with open(output_path, 'w') as file:
-                file.write(f"CalledProcessError: {e}")
-            self.fail_task(f"Command failed with error: {e}")
+                file.write(error_message)
+            self.fail_task(error_message)
 
     def fail_task(self, message):
         print(message)
