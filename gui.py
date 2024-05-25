@@ -1,12 +1,12 @@
-# app.py
 from flask import Flask, jsonify, request, send_from_directory, abort
 from flask_cors import CORS
 import subprocess
 import os
 import re
+import luigi
+from luigi_tasks import MainEnumerationTask
 from models import Database
 from utils import *
-
 
 app = Flask(__name__)
 CORS(app)
@@ -18,27 +18,26 @@ def create_scan():
     target = data.get('target')
 
     if is_valid_domain(target):
-        run_scan(target, scan_type)
+        run_enumeration_tasks(target, scan_type)
         return jsonify({'message': 'Scan successfully initiated'}), 200
     else:
         return jsonify({'error': 'Invalid domain provided'}), 400
 
-def run_scan(domain, case_type):
+def run_enumeration_tasks(domain, scan_type):
+    scan_id = str(uuid.uuid4())
+    timestamp = datetime.now().isoformat()
+    save_directory = create_directory(domain)
+    
     try:
-        command = ['python3', 'scan.py', '-d', domain]
-        if case_type == 'passive':
-            command += ['-t', 'passive']
-        elif case_type == 'hybrid':
-            command += ['-t', 'hybrid']
-        else:
-            print(f"Unknown case type: {case_type}")
-            return
-
-        subprocess.Popen(command)
-        print(f"Command executed: {' '.join(command)}")
-        print("Scan initiated successfully.")
-    except Exception as e:
-        print(f"Error initiating scan: {e}")
+        Database.insert_scan(scan_id, domain, scan_type, timestamp, 'running')
+        logging.info(f"Inserted scan record: {scan_id}")
+    except sqlite3.Error as e:
+        logging.error(f"Database error: {e}")
+        return
+    
+    # Build tasks linked to this scan
+    luigi.build([MainEnumerationTask(scan_type=scan_type, domain=domain, save_directory=save_directory, scan_id=scan_id)], workers=50, local_scheduler=True)
+    logging.info("Luigi tasks have been built and are running.")
 
 @app.route('/scans', methods=['GET'])
 def get_scans():
