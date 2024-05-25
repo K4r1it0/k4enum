@@ -48,11 +48,7 @@ class Database:
     def update_scan_status(scan_id, new_status):
         with Database.connect() as conn:
         	cur = conn.cursor()
-            cur.execute('''
-                UPDATE scans
-                SET status = ?
-                WHERE scan_id = ?
-            ''', (new_status, scan_id))
+            cur.execute('''UPDATE scans SET status = ? WHERE scan_id = ?''', (new_status, scan_id))
             conn.commit()
 
 	@staticmethod
