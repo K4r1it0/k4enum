@@ -199,6 +199,7 @@ class Database:
         scan_counts.append({'status': "all", 'count': total_scans})
         return scan_counts
 
+
     @staticmethod
     def get_tasks_for_scan(scan_id, params, status, search, page, per_page):
         """ Get paginated tasks for a scan based on status and search """
@@ -247,7 +248,7 @@ class Database:
             }
             task_list.append(task_dict)
         
-        return task_list, total_count
+        return domain, task_list, total_count
 
     @staticmethod
     def get_total_count(query, params):
