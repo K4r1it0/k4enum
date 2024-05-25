@@ -100,8 +100,9 @@ class HTTPProbing(BaseTask):
         return luigi.LocalTarget(f"{self.save_directory}/{self.__class__.__name__}-{self.case}")
 
     def run(self):
-        cmd = f"cat {self.input().path} | httpx -silent -t 500 -fhr -sr -store-chain -srd ~/bugbounty/archive/ | awk '{{print $1}}'"
+        cmd = f"cat {self.input().path} | httpx -silent -vhost -tls-probe -favicon -t 500 -fhr -sr -store-chain -srd ~/bugbounty/archive/"
         self.run_cmd(cmd, self.output().path)
+
 
 class YieldWrapper(BaseTask):
     def requires(self):
@@ -120,7 +121,8 @@ class Miscellaneous(BaseTask):
     def requires(self):
 
         return [
-
+            
+            Screenshots(domain=self.domain,case=self.case,save_directory=self.save_directory,scan_id=self.scan_id),
             TlsGrabber(domain=self.domain,case=self.case,save_directory=self.save_directory,scan_id=self.scan_id),
             TlsFilter(domain=self.domain,case=self.case,save_directory=self.save_directory,scan_id=self.scan_id),
             RecordsDump(domain=self.domain,case=self.case,save_directory=self.save_directory,scan_id=self.scan_id),
@@ -144,6 +146,15 @@ class TlsGrabber(BaseTask):
 
     def run(self):
         cmd = f"cat {self.save_directory}/HTTPProbing-{self.case} | tlsx -san -cn -silent -resp-only -c 500 | sort -u"
+        self.run_cmd(cmd, self.output().path)
+
+class Screenshots(BaseTask):
+
+    def output(self):
+        return luigi.LocalTarget(f"{self.save_directory}/{self.__class__.__name__}-{self.case}")
+
+    def run(self):
+        cmd = f"cat {self.save_directory}/HTTPProbing-{self.case} | awk '{{print $1}}' | gowitness file --disable-db --delay 1 --header 'User-Agent: Mozilla/5.0 (Linux; Android 12; SM-S906N Build/QP1A.190711.020; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/80.0.3987.119 Mobile Safari/537.36' -t 200 --timeout 5 -f x.txt -P {self.save_directory}/gowitness"
         self.run_cmd(cmd, self.output().path)
 
 

@@ -1,6 +1,15 @@
 import os
 import datetime
+import re
 save_directory = "results"
+
+
+def is_valid_domain(domain):
+    """Check if the provided domain is valid."""
+    # Use a regex pattern to validate the domain
+    pattern = r"^(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,}$"
+    return re.match(pattern, domain) is not None
+
 
 def create_directory(dir_name):
     current_dir = os.getcwd()

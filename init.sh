@@ -27,3 +27,8 @@ go install github.com/trickest/dsieve@latest
 
 wget https://wordlists-cdn.assetnote.io/data/manual/best-dns-wordlist.txt -O ~/best-dns-wordlist.txt
 wget https://raw.githubusercontent.com/trickest/resolvers/main/resolvers.txt -O ~/resolvers.txt
+
+wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+sudo dpkg -i google-chrome-stable_current_amd64.deb
+sudo apt-get install fonts-liberation libu2f-udev
+sudo dpkg -i google-chrome-stable_current_amd64.deb
