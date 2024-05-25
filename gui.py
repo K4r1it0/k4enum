@@ -1,12 +1,13 @@
 from flask import Flask, jsonify, request, send_from_directory, abort
+from tasks import MainEnumerationTask
 from flask_cors import CORS
+from models import Database
+from utils import *
 import subprocess
+import uuid4
 import os
 import re
 import luigi
-from tasks import MainEnumerationTask
-from models import Database
-from utils import *
 
 app = Flask(__name__)
 CORS(app)
