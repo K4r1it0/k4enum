@@ -32,7 +32,7 @@ def create_scan():
     
     return 'Scan started successfully'
 
-@app.route('/tasks/<task_id>/results', methods=['GET'])
+@app.route('/tasks/<string:task_id>/results', methods=['GET'])
 def get_task_results_by_id(task_id):
     results = Database.get_task_results(task_id)
     if results is not None:
