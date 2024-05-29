@@ -219,7 +219,7 @@ class Database:
         '''
         task_names_to_exclude = ['MainEnumerationTask', 'YieldWrapper', 'Miscellaneous']  # Replace with actual task names
 
-        if status is not None:
+        if status is not None and status != "":
             base_query += ' AND status = ?'
             query_params = (scan_id,) + tuple(task_names_to_exclude) + (status,)
         else:
