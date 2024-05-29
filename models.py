@@ -209,50 +209,49 @@ class Database:
         scan_counts.append({'status': "all", 'count': total_scans})
         return scan_counts
 
-	@staticmethod
-	def get_tasks_for_scan(scan_id, page=1, per_page=10, status=None, search=None):
-		domain_query = 'SELECT domain FROM scans WHERE scan_id = ?'
-		base_query = '''
-			SELECT task_id, task_name, status, type, message, timestamp
-			FROM task_status
-			WHERE scan_id = ? AND task_name NOT IN (?, ?, ?)
-		'''
-		task_names_to_exclude = ['MainEnumerationTask', 'YieldWrapper', 'Miscellaneous']  # Replace with actual task names
-		query_params = (scan_id,) + tuple(task_names_to_exclude)
+    @staticmethod
+    def get_tasks_for_scan(scan_id, page=1, per_page=10, status=None, search=None):
+        domain_query = 'SELECT domain FROM scans WHERE scan_id = ?'
+        base_query = '''
+            SELECT task_id, task_name, status, type, message, timestamp
+            FROM task_status
+            WHERE scan_id = ? AND task_name NOT IN (?, ?, ?)
+        '''
+        task_names_to_exclude = ['MainEnumerationTask', 'YieldWrapper', 'Miscellaneous']  # Replace with actual task names
+        query_params = (scan_id,) + tuple(task_names_to_exclude)
 
-		if status is not None:
-			base_query += ' AND status = ?'
-			query_params += (status,)
+        if status is not None:
+            base_query += ' AND status = ?'
+            query_params += (status,)
 
-		with Database.connect() as conn:
-			domain_result = conn.execute(domain_query, (scan_id,)).fetchone()
-			domain = domain_result[0] if domain_result else None
+        with Database.connect() as conn:
+            domain_result = conn.execute(domain_query, (scan_id,)).fetchone()
+            domain = domain_result[0] if domain_result else None
 
-			tasks_query = Database.paginate_query(base_query, page, per_page)
-			tasks_result = conn.execute(tasks_query, query_params).fetchall()
+            tasks_query = Database.paginate_query(base_query, page, per_page)
+            tasks_result = conn.execute(tasks_query, query_params).fetchall()
 
-			task_list = [
-				{'task_id': task[0], 'task_name': task[1], 'status': task[2], 'type': task[3], 'message': task[4], 'updatedAt': task[5]}
-				for task in tasks_result
-			]
+            task_list = [
+                {'task_id': task[0], 'task_name': task[1], 'status': task[2], 'type': task[3], 'message': task[4], 'updatedAt': task[5]}
+                for task in tasks_result
+            ]
 
-			total_count_query = 'SELECT COUNT(*) FROM task_status WHERE scan_id = ? AND task_name NOT IN (?, ?, ?)'
-			total_count_result = conn.execute(total_count_query, query_params).fetchone()
-			total_count = total_count_result[0] if total_count_result else 0
+            total_count_query = 'SELECT COUNT(*) FROM task_status WHERE scan_id = ? AND task_name NOT IN (?, ?, ?)'
+            total_count_result = conn.execute(total_count_query, query_params).fetchone()
+            total_count = total_count_result[0] if total_count_result else 0
 
-			total_pages = (total_count + per_page - 1) // per_page
+            total_pages = (total_count + per_page - 1) // per_page
 
-		return {
-			'domain': domain,
-			'data': task_list,
-			'pagination': {
-				'total_items': total_count,
-				'total_pages': total_pages,
-				'current_page': page,
-				'per_page': per_page
-			}
-		}
-
+        return {
+            'domain': domain,
+            'data': task_list,
+            'pagination': {
+                'total_items': total_count,
+                'total_pages': total_pages,
+                'current_page': page,
+                'per_page': per_page
+            }
+        }
     @staticmethod
     def get_total_count(query, params):
         """ Get total count of rows for a given query and parameters """
