@@ -218,11 +218,12 @@ class Database:
             WHERE scan_id = ? AND task_name NOT IN (?, ?, ?)
         '''
         task_names_to_exclude = ['MainEnumerationTask', 'YieldWrapper', 'Miscellaneous']  # Replace with actual task names
-        query_params = (scan_id,) + tuple(task_names_to_exclude)
 
         if status is not None:
             base_query += ' AND status = ?'
-            query_params += (status,)
+            query_params = (scan_id,) + tuple(task_names_to_exclude) + (status,)
+        else:
+            query_params = (scan_id,) + tuple(task_names_to_exclude)
 
         with Database.connect() as conn:
             domain_result = conn.execute(domain_query, (scan_id,)).fetchone()
@@ -237,7 +238,7 @@ class Database:
             ]
 
             total_count_query = 'SELECT COUNT(*) FROM task_status WHERE scan_id = ? AND task_name NOT IN (?, ?, ?)'
-            total_count_result = conn.execute(total_count_query, query_params).fetchone()
+            total_count_result = conn.execute(total_count_query, query_params[:4]).fetchone()
             total_count = total_count_result[0] if total_count_result else 0
 
             total_pages = (total_count + per_page - 1) // per_page
@@ -252,6 +253,8 @@ class Database:
                 'per_page': per_page
             }
         }
+
+    
     @staticmethod
     def get_total_count(query, params):
         """ Get total count of rows for a given query and parameters """
