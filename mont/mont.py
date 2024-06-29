@@ -14,14 +14,12 @@ class BaseTask(luigi.Task):
     domain = luigi.Parameter()
 
     def run_cmd(self, cmd, output_path):
-        print(f"Executing command: {cmd}")
         output_paths.append(output_path)
         try:
             with open(output_path, 'w') as file:
                 subprocess.run(cmd, shell=True, check=True, stdout=file, stderr=subprocess.STDOUT)
             with open(output_path, 'r') as file:
                 output = file.read()
-                print(output)  # For debugging
 
         except subprocess.CalledProcessError as e:
             error_message = f"Command failed with error: {e}"
@@ -110,7 +108,7 @@ class Notify(BaseTask):
         return Anew(domain=self.domain)
 
     def run(self):
-        cmd = f"cat {self.input().path} | notify -bulk"
+        cmd = f"cat {self.input().path} | notify -bulk 2> /dev/null"
         self.run_cmd(cmd, self.output().path)
 
 class Cleanup(BaseTask):
