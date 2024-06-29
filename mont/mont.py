@@ -5,6 +5,9 @@ import sys
 import argparse
 import time
 from datetime import datetime, timedelta
+import logging
+
+logging.basicConfig(level=logging.CRITICAL)
 
 # Global list to store output paths
 output_paths = []
