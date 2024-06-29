@@ -143,15 +143,27 @@ def main():
 
     args = parser.parse_args()
 
+    if not args.domain and not args.file:
+        parser.error('Please provide either a domain name or a file containing domains.')
+
     domains = []
 
     if args.domain:
         domains.append(args.domain)
 
     if args.file:
+        if not os.path.exists(args.file):
+            print(f"Error: File '{args.file}' not found.")
+            return
+        
         with open(args.file, 'r') as file:
             domains.extend(file.read().splitlines())
 
+    # Run the tasks immediately upon startup
+    max_workers = 10
+    tasks = [MainEnumerationTask(domain=domain) for domain in domains]
+    luigi.build(tasks, local_scheduler=True, workers=max_workers)
+    
     while True:
         # Get current time
         now = datetime.now()
@@ -163,7 +175,7 @@ def main():
         else:
             # Tomorrow's 5 PM
             target_time = now + timedelta(days=1)
-            target_time = target_time.replace(hour=5, minute=0, second=0, microsecond=0)
+            target_time = target_time.replace(hour=17, minute=0, second=0, microsecond=0)
 
         # Calculate seconds until target_time
         delta_seconds = (target_time - now).total_seconds()
@@ -181,6 +193,7 @@ def main():
         # Sleep again for 12 hours before running next batch
         print("Sleeping for 12 hours before next run...")
         time.sleep(12 * 60 * 60)  # 12 hours in seconds
+
 
 if __name__ == '__main__':
     main()
