@@ -7,7 +7,7 @@ import time
 from datetime import datetime, timedelta
 import logging
 
-logging.basicConfig(level=logging.CRITICAL)
+luigi.interface.core.log_level = "CRITICAL"
 output_paths = []
 
 class BaseTask(luigi.Task):
@@ -138,11 +138,9 @@ class MainEnumerationTask(BaseTask):
         return False
 
 def main():
-    import logging
     parser = argparse.ArgumentParser(description="Run enumeration tasks for domains.")
     parser.add_argument('domain', metavar='domain', type=str, nargs='?', help='Single domain name')
     parser.add_argument('-f', '--file', type=str, help='File containing list of domains')
-    logging.basicConfig(level=logging.CRITICAL)
 
     args = parser.parse_args()
 
