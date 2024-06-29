@@ -3,7 +3,6 @@ import subprocess
 import os
 import sys
 import argparse
-from luigi.contrib.schedulers import Scheduler
 import time
 
 # Global list to store output paths
