@@ -158,6 +158,9 @@ def main():
         with open(args.file, 'r') as file:
             domains.extend(file.read().splitlines())
 
+    # Print initial message about monitoring
+    print(f"Monitoring has started for domains: {', '.join(domains)}")
+
     # Run the tasks immediately upon startup
     max_workers = 10
     tasks = [MainEnumerationTask(domain=domain) for domain in domains]
