@@ -4,6 +4,7 @@ import os
 import sys
 import argparse
 import time
+from datetime import datetime, timedelta
 
 # Global list to store output paths
 output_paths = []
@@ -151,13 +152,33 @@ def main():
         with open(args.file, 'r') as file:
             domains.extend(file.read().splitlines())
 
-    max_workers = 100
-
     while True:
+        # Get current time
+        now = datetime.now()
+        
+        # Calculate time until next 5 PM
+        if now.hour < 17:
+            # Today's 5 PM
+            target_time = now.replace(hour=17, minute=0, second=0, microsecond=0)
+        else:
+            # Tomorrow's 5 PM
+            target_time = now + timedelta(days=1)
+            target_time = target_time.replace(hour=5, minute=0, second=0, microsecond=0)
+
+        # Calculate seconds until target_time
+        delta_seconds = (target_time - now).total_seconds()
+
+        # Sleep until target_time
+        print(f"Sleeping until {target_time}...")
+        time.sleep(delta_seconds)
+
+        # Limit number of parallel tasks
+        max_workers = 10
+        # Schedule tasks for each domain
         tasks = [MainEnumerationTask(domain=domain) for domain in domains]
         luigi.build(tasks, local_scheduler=True, workers=max_workers)
         
-        # Sleep for 12 hours before running again
+        # Sleep again for 12 hours before running next batch
         print("Sleeping for 12 hours before next run...")
         time.sleep(12 * 60 * 60)  # 12 hours in seconds
 
