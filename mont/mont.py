@@ -27,7 +27,7 @@ class BaseTask(luigi.Task):
                 file.write(error_message)
 
     def output(self):
-        directory = f"./mont/{self.domain}"
+        directory = f"./results/{self.domain}"
         if not os.path.exists(directory):
             os.makedirs(directory)
         return luigi.LocalTarget(f"{directory}/{self.__class__.__name__}.txt")
@@ -95,7 +95,7 @@ class Anew(BaseTask):
         return HTTPProbing(domain=self.domain)
 
     def run(self):
-        latest_path = f"./mont/{self.domain}/latest.txt"
+        latest_path = f"./results/{self.domain}/latest.txt"
         if os.path.exists(latest_path):
             cmd = f"cat {self.input().path} | anew {latest_path}"
         else:
@@ -117,7 +117,7 @@ class Cleanup(BaseTask):
         return Notify(domain=self.domain)
 
     def run(self):
-        cmd = f"find ./mont/{self.domain} -type f ! -name 'latest.txt' ! -name 'Cleanup.txt' -exec rm -f {{}} +"
+        cmd = f"find ./results/{self.domain} -type f ! -name 'latest.txt' ! -name 'Cleanup.txt' -exec rm -f {{}} +"
         self.run_cmd(cmd, self.output().path)
 
 class MainEnumerationTask(BaseTask):
