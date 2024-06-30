@@ -164,9 +164,7 @@ def main():
         with open(args.file, 'r') as file:
             domains.extend(file.read().splitlines())
 
-    # Print initial message about monitoring
-    print(f"Monitoring has started for domains: {', '.join(domains)}")
-
+    print("Waiting for the Schedule")
     # Schedule tasks for 5 AM and 1 PM daily
     schedule.every().day.at("05:00").do(run_tasks, domains=domains)
     schedule.every().day.at("13:00").do(run_tasks, domains=domains)
