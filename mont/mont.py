@@ -6,7 +6,7 @@ import argparse
 import time
 from datetime import datetime, timedelta
 import logging
-
+import schedule
 luigi.interface.core.log_level = "CRITICAL"
 output_paths = []
 
